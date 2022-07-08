@@ -1,0 +1,4 @@
+(executables (names csv) (public_names csv)
+ (libraries async csvfields.csvlib core_unix.command_unix csv_tool_lib
+  core_unix.filename_unix pcre)
+ (preprocess (pps ppx_jane)))

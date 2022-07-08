@@ -1,0 +1,206 @@
+open Core
+open Async
+module Lib = Csv_tool_lib
+module Csv_param = Lib.Csv_param
+
+module Merge = struct
+  let command =
+    Command.basic
+      ~summary:"merge multiple CSV files into one"
+      (let%map_open.Csv_param separator = sep
+       and files = files in
+       fun () ->
+         if List.length files < 2
+         then failwith "must specify at least two files to merge"
+         else Lib.Merge.run files ~separator)
+  ;;
+end
+
+module Sort = struct
+  let command =
+    Command.basic
+      ~summary:"stably sort a csv file on a given column"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon
+       and field = field
+       and sort_type = Lib.Csv_sort.Sort_type.param
+       and reverse = reverse in
+       fun () -> Lib.Csv_sort.run ~separator ~sort_type ~field ~reverse file)
+  ;;
+end
+
+module Transpose = struct
+  let command =
+    Command.basic
+      ~summary:"transpose csv rows to columns for easier command-line viewing"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon in
+       fun () -> Lib.Csv_transpose.run ~separator file)
+  ;;
+end
+
+module Grep = struct
+  let command =
+    Command.async_or_error
+      ~summary:
+        "grep in csv fields (using the re2 regular expression engine), while keeping the \
+         header"
+      (let%map_open.Csv_param
+        (* The default behavior is to print header only if there are output rows. It
+           is less good a behavior, but it is historically what this command did. *)
+        separator
+        =
+        sep
+       and skip_lines = skip_lines
+       and grep_fields = Lib.Grep.Target_fields.param
+       and file = file_stdin_anon
+       and regexp = regexp
+       and invert = invert
+       and always_print_header =
+         flag "-always-print-header" no_arg ~doc:" print headers even if no rows match"
+       in
+       fun () ->
+         Lib.Grep.run
+           ~separator
+           ?skip_lines
+           ~invert
+           ~always_print_header
+           ~grep_fields
+           ~regexp
+           file)
+  ;;
+end
+
+module Grid = struct
+  let command =
+    Command.basic
+      ~summary:"grid based on specified column, start time, stop time and span"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon
+       and field = time_field
+       and start = start_time
+       and stop = stop_time
+       and step = grid_step in
+       fun () -> Lib.Csv_grid.run ~separator ~field ~start ~stop ~step file)
+  ;;
+end
+
+module To_ascii_table = struct
+  let command =
+    Command.basic
+      ~summary:"print a csv as an ascii-table"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon
+       and limit_width_to = max_width
+       and prefer_split_on_spaces = prefer_split_on_spaces in
+       fun () ->
+         Lib.To_ascii_table.run ~separator ?limit_width_to file ~prefer_split_on_spaces)
+  ;;
+end
+
+module To_html_table = struct
+  let command =
+    Command.basic
+      ~summary:"print a csv as an HTML table"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon
+       and no_header = no_header
+       and suppress_header = suppress_header
+       and table_attrs = table_attrs
+       and th_attrs = th_attrs
+       and tr_attrs = tr_attrs
+       and td_attrs = td_attrs
+       and border = border
+       and unescaped_html =
+         flag
+           "-unescaped-html"
+           no_arg
+           ~doc:
+             " if input file contains HTML snippets, don't escape them and include as-is"
+       in
+       fun () ->
+         Lib.To_html_table.run
+           ~separator
+           ~no_header
+           ~suppress_header
+           ~table_attrs
+           ~th_attrs
+           ~tr_attrs
+           ~td_attrs
+           ~border
+           ~unescaped_html
+           file)
+  ;;
+end
+
+module Sum = struct
+  let command =
+    Command.basic
+      ~summary:
+        "sum columns (use 0 for a cell if Float.of_string fails). All rows must have the \
+         same length"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon in
+       fun () -> Lib.Csv_sum.run ~separator file)
+  ;;
+end
+
+module Sum_group = struct
+  let command = Lib.Sum_group.command
+end
+
+module Id = struct
+  let command =
+    Command.async
+      ~summary:"transfer input to output, canonicalising quoting"
+      (let%map_open.Csv_param sep = sep
+       and file = file_stdin_anon in
+       fun () ->
+         let%bind reader =
+           match file with
+           | Csv _ -> failwith "BUG: expected a file and got a csv directly"
+           | File f -> Reader.open_file f
+           | Stdin -> force Reader.stdin |> return
+         in
+         Lib.Id.run ~sep reader (force Writer.stdout))
+  ;;
+end
+
+module Validate = struct
+  let command =
+    Command.async
+      ~summary:"raise if the csv has ragged rows"
+      (let%map_open.Csv_param sep = sep
+       and file = file_stdin_anon in
+       fun () ->
+         let%bind reader =
+           match file with
+           | Csv _ -> failwith "BUG: expected a file and got a csv directly"
+           | File f -> Reader.open_file f
+           | Stdin -> force Reader.stdin |> return
+         in
+         match%bind Lib.Validate.run ~sep reader with
+         | Ok () -> return ()
+         | Error msg ->
+           prerr_endline msg;
+           exit 1)
+  ;;
+end
+
+module Header = struct
+  let command =
+    Command.async
+      ~summary:"Add the given column headers to a csv"
+      (let%map_open.Csv_param sep = sep
+       and file = file_stdin_flag
+       and add_header = anon (non_empty_sequence_as_list ("COLUMN-HEADER" %: string)) in
+       fun () ->
+         let%bind reader =
+           match file with
+           | Csv _ -> failwith "BUG: expected a file and got a csv directly"
+           | File f -> Reader.open_file f
+           | Stdin -> force Reader.stdin |> return
+         in
+         Lib.Id.run ~sep ~add_header reader (force Writer.stdout))
+  ;;
+end
