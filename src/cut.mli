@@ -10,7 +10,7 @@ type row_processor =
   Csv_common.Or_file.t
   -> skip_header:bool
   -> sep:char
-  -> f:(string list -> unit)
+  -> f:(string array -> unit)
   -> [ `Limit_to of string list | `All_but of string list ]
   -> unit
 
@@ -21,7 +21,7 @@ val cut_by_field_names : row_processor
 val regex_match
   :  Csv_common.Or_file.t
   -> sep:char
-  -> f:(string list -> unit)
+  -> f:(string array -> unit)
   -> regexp:Pcre.regexp
   -> unit
 

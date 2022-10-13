@@ -22,7 +22,7 @@ module Sort = struct
       ~summary:"stably sort a csv file on a given column"
       (let%map_open.Csv_param separator = sep
        and file = file_stdin_anon
-       and field = field
+       and field = field' ~aliases:[ "-f"; "--field" ]
        and sort_type = Lib.Csv_sort.Sort_type.param
        and reverse = reverse in
        fun () -> Lib.Csv_sort.run ~separator ~sort_type ~field ~reverse file)

@@ -2,9 +2,12 @@ open! Core
 
 module Sort_type : sig
   type t =
+    | Bytes
     | Float
+    | Infer
     | Int
     | Natsort (** https://en.wikipedia.org/wiki/Natural_sort_order *)
+    | Span
     | String
     | Time
   [@@deriving compare, enumerate, sexp_of]

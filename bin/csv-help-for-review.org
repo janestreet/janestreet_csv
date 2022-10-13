@@ -267,10 +267,12 @@
 : 
 : === flags ===
 : 
-:   -field <field>, --field    . field name to sort on
+:   -field <field>, -f, --field
+:                              . field name to sort on
 :   [-field-type _], --field-type
-:                              . field type for sorting (default: string) (can be:
-:                                float, int, natsort, string, time)
+:                              . field type for sorting (default: infer) (can be:
+:                                bytes, float, infer, int, natsort, span, string,
+:                                time)
 :   [-reverse], --reverse      . reverse sorting order
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')

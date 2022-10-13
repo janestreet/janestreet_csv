@@ -13,6 +13,7 @@ module Open_on_rhs_intf = struct
     val files : string list t
     val reverse : bool t
     val field : string t
+    val field' : aliases:string list -> string t
     val time_field : string t
     val start_time : Time_float.t t
     val stop_time : Time_float.t t

@@ -1,5 +1,47 @@
 open Core
 
+module Pad_floats = struct
+  type t =
+    { digits_before_dot : int
+    ; digits_after_and_including_dot : int
+    }
+
+  let empty = { digits_before_dot = 1; digits_after_and_including_dot = 0 }
+
+  let width { digits_before_dot; digits_after_and_including_dot } =
+    digits_before_dot + digits_after_and_including_dot
+  ;;
+
+  let of_string x =
+    match String.index x '.' with
+    | None -> { digits_before_dot = String.length x; digits_after_and_including_dot = 0 }
+    | Some digits_before_dot ->
+      { digits_before_dot
+      ; digits_after_and_including_dot = String.length x - digits_before_dot
+      }
+  ;;
+
+  let max a b =
+    { digits_before_dot = Int.max a.digits_before_dot b.digits_before_dot
+    ; digits_after_and_including_dot =
+        Int.max a.digits_after_and_including_dot b.digits_after_and_including_dot
+    }
+  ;;
+
+  let max_length = List.fold ~init:empty ~f:(fun acc string -> max acc (of_string string))
+
+  let pad desired string =
+    let actual = of_string string in
+    let spaces n = String.make n ' ' in
+    let left_padding = spaces (desired.digits_before_dot - actual.digits_before_dot) in
+    let right_padding =
+      spaces
+        (desired.digits_after_and_including_dot - actual.digits_after_and_including_dot)
+    in
+    String.concat [ left_padding; string; right_padding ]
+  ;;
+end
+
 let max_length xs = List.fold xs ~init:1 ~f:(fun w x -> Int.max w (String.length x))
 
 let string_padding x w =
@@ -8,16 +50,10 @@ let string_padding x w =
   if w > n then Some (String.make (w - n) ' ') else None
 ;;
 
-let pad_right x w =
-  match string_padding x w with
+let pad_right x ~width =
+  match string_padding x width with
   | None -> x
   | Some pad -> x ^ pad
-;;
-
-let pad_left x w =
-  match string_padding x w with
-  | None -> x
-  | Some pad -> pad ^ x
 ;;
 
 let matches of_string x =
@@ -29,7 +65,7 @@ let matches of_string x =
 let may_be_numeric = function
   | "" -> true
   | n ->
-    let n = Option.value ~default:n (String.chop_prefix ~prefix:"$" n) in
+    let n = String.chop_prefix_if_exists ~prefix:"$" n in
     matches Int.of_string n || matches Float.of_string n
 ;;
 
@@ -56,41 +92,31 @@ let prettify_internal ~space ~suppress_header csv =
          List.fold_right
            columns
            ~init:("", [])
-           ~f:(fun (header, column_width, col_type) (base_row, header_rows) ->
-             let right_align =
+           ~f:(fun (header, col_type) (base_row, header_rows) ->
+             let bar_place, column_width =
                match col_type with
-               | `String -> false
-               | `Number -> true
+               | `String width -> 0, width
+               | `Number (pad_float : Pad_floats.t) ->
+                 pad_float.digits_before_dot - 1, Pad_floats.width pad_float
              in
              let header_width = String.length header in
+             let header_offset = Int.max 0 (bar_place + 1 - header_width) in
              let pad = String.make column_width ' ' in
              let bar_pad =
-               let bar_place = if right_align then column_width - 1 else 0 in
                String.mapi pad ~f:(fun i c -> if i = bar_place then '|' else c)
              in
              let rec add = function
-               | [] ->
-                 let header =
-                   if right_align && column_width > header_width
-                   then String.make (column_width - header_width) ' ' ^ header
-                   else header
-                 in
-                 [ header, 0 ]
+               | [] -> [ String.make header_offset ' ' ^ header, 0 ]
                | (text, num_blanks) :: rest ->
                  if column_width + num_blanks >= header_width
                  then (
                    let pad text = pad ^ sep ^ text in
                    let text = Bytes.of_string (pad text) in
-                   let dst_pos =
-                     if right_align && column_width > header_width
-                     then column_width - header_width
-                     else 0
-                   in
                    Bytes.From_string.blit
                      ~src:header
                      ~src_pos:0
                      ~dst:text
-                     ~dst_pos
+                     ~dst_pos:header_offset
                      ~len:header_width;
                    (Bytes.to_string text, 0)
                    :: List.map rest ~f:(fun (text, num_blanks) ->
@@ -115,25 +141,24 @@ let prettify_internal ~space ~suppress_header csv =
       |> List.map ~f:(function
         | [] -> assert false
         | header :: values ->
-          let width = max_length values in
           let col_type = col_type values in
-          let pad =
+          let width, pad =
             match col_type with
-            | `String -> pad_right
-            | `Number -> pad_left
+            | `String ->
+              let width = max_length values in
+              `String width, pad_right ~width
+            | `Number ->
+              let pad_floats = Pad_floats.max_length values in
+              `Number pad_floats, Pad_floats.pad pad_floats
           in
-          let header_info = header, width, col_type in
-          header_info, List.map values ~f:(fun value -> pad value width))
+          let header_info = header, width in
+          header_info, List.map values ~f:pad)
     in
     let header_lines =
-      if suppress_header
-      then []
-      else header_block (List.map cols ~f:(fun (header_info, _) -> header_info))
+      if suppress_header then [] else header_block (List.map cols ~f:fst)
     in
     let row_lines =
-      List.map
-        ~f:(String.concat ~sep)
-        (List.transpose_exn (List.map cols ~f:(fun (_, values) -> values)))
+      List.map ~f:(String.concat ~sep) (List.transpose_exn (List.map cols ~f:snd))
     in
     Ok { header_lines; row_lines }
 ;;

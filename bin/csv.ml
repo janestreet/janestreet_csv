@@ -41,16 +41,20 @@ let cut_command ~deprecated =
     ~summary
     (let%map_open sep = sep
      and headers_wanted = headers_wanted fields
-     and skip_header = suppress_header
+     and suppress_header = suppress_header
      and files = anon (sequence ("FILE" %: Filename_unix.arg_type)) in
      fun () ->
-       let handle_file file =
+       let handle_file ~skip_header file =
          Cut.cut_by_field_names file ~sep headers_wanted ~skip_header ~f:(fun row ->
-           Csvlib.Csv.print [ row ])
+           Csvlib.Csv.print [ Array.to_list row ])
        in
        match files with
-       | [] -> handle_file Stdin
-       | _ -> List.iter files ~f:(fun x -> handle_file (File x)))
+       | [] -> handle_file ~skip_header:suppress_header Stdin
+       | first :: rest ->
+         (* If we process more than one file we should not emit multiple copies of the
+            header. *)
+         handle_file ~skip_header:suppress_header (File first);
+         List.iter rest ~f:(fun x -> handle_file ~skip_header:true (File x)))
 ;;
 
 let join_command =
@@ -97,14 +101,14 @@ let pop_or_unpop_command ~summary pop_type =
          match pop_type with
          | `pop ->
            Cut.fully_populated_rows file ~skip_header ~sep headers_wanted ~f:(fun row ->
-             Csvlib.Csv.print [ row ])
+             Csvlib.Csv.print [ Array.to_list row ])
          | `unpop ->
            Cut.not_fully_populated_rows
              file
              ~skip_header
              ~sep
              headers_wanted
-             ~f:(fun row -> Csvlib.Csv.print [ row ])
+             ~f:(fun row -> Csvlib.Csv.print [ Array.to_list row ])
        in
        match files with
        | None -> handle_file Stdin

@@ -15,13 +15,11 @@ module T = struct
     flag "-reverse" no_arg ~doc:" reverse sorting order" ~aliases:[ "--reverse" ]
   ;;
 
-  let field =
-    flag
-      "-field"
-      (required string)
-      ~doc:"<field> field name to sort on"
-      ~aliases:[ "--field" ]
+  let field' ~aliases =
+    flag "-field" (required string) ~doc:"<field> field name to sort on" ~aliases
   ;;
+
+  let field = field' ~aliases:[ "--field" ]
 
   let time_field =
     flag

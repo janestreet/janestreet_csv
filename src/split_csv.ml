@@ -27,26 +27,26 @@ let of_mapped_csv mapped_csv ~(key_spec : Key_specifier.t) =
   let module SS = String.Set in
   let column_set = Key_specifier.to_string_set key_spec in
   let validate_key_spec () =
-    if SS.is_empty column_set
+    if Set.is_empty column_set
     then raise (Invalid_argument "No key columns specified")
     else (
       let header_set =
         Map.fold
           (Mapped_csv.header_map mapped_csv : _ Int.Map.t)
           ~init:SS.empty
-          ~f:(fun ~key:_ ~data:header output_set -> SS.add output_set header)
+          ~f:(fun ~key:_ ~data:header output_set -> Set.add output_set header)
       in
-      SS.iter column_set ~f:(fun col ->
-        if not (SS.mem header_set col)
+      Set.iter column_set ~f:(fun col ->
+        if not (Set.mem header_set col)
         then raise (Invalid_argument (sprintf "Key column %s does not exist" col)));
-      if SS.length column_set = SS.length header_set
+      if Set.length column_set = Set.length header_set
       then raise (Invalid_argument "All columns are marked as key columns.")
       else ())
   in
   validate_key_spec ();
   let get_key_and_value_for_row_map row_map =
     Map.fold row_map ~init:(SM.empty, SM.empty) ~f:(fun ~key ~data (key_map, val_map) ->
-      if SS.mem column_set key
+      if Set.mem column_set key
       then Map.set key_map ~key ~data, val_map
       else key_map, Map.set val_map ~key ~data)
   in

@@ -83,7 +83,7 @@ let run ?separator ?skip_lines ~invert ~always_print_header ~grep_fields ~regexp
                  match grep_fields with
                  | Target_fields.All -> true
                  | Target_fields.Field_names field_name_set ->
-                   String.Set.mem field_name_set header
+                   Set.mem field_name_set header
                in
                if possible_to_check then Re2.matches regexp data else false)
            in

@@ -30,19 +30,19 @@ let int_specifier_of_string spec =
     |> List.fold ~init:String.Set.empty ~f:(fun accum col_list ->
       List.fold col_list ~init:accum ~f:(fun accum col ->
         let col = string_of_int col in
-        if String.Set.mem accum col
+        if Set.mem accum col
         then
           raise
             (Invalid_specifier
                ("Invalid column specifier: column " ^ col ^ " duplicated."))
-        else String.Set.add accum col)))
+        else Set.add accum col)))
 ;;
 
 (* A specifier string looks like f1,f3,f5,f7. *)
 let specifier_of_string spec =
   let fields = Pcre.split ~pat:"," spec in
   List.fold fields ~init:String.Set.empty ~f:(fun set field ->
-    if String.Set.mem set field
+    if Set.mem set field
     then raise (Invalid_specifier ("Column " ^ field ^ " duplicated"))
-    else String.Set.add set field)
+    else Set.add set field)
 ;;

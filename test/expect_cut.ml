@@ -97,7 +97,8 @@ let%expect_test _ =
     --- STDERR ---
     Uncaught exception:
 
-      ("Unknown header" fruit) |}];
+      ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
+       (buffer (fruit,quantity,owner)) (exn ("Unknown header" fruit))) |}];
     return ())
 ;;
 
@@ -116,7 +117,8 @@ let%expect_test _ =
     --- STDERR ---
     Uncaught exception:
 
-      ("Unknown header" fruit) |}];
+      ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
+       (buffer (fruit,quantity,owner)) (exn ("Unknown header" fruit))) |}];
     return ())
 ;;
 
@@ -148,17 +150,16 @@ let%expect_test _ =
 ;;
 
 let%expect_test "incorrect duplication of header" =
+  (* We used to have a bug where the header would be printed once per file. *)
   do_test (fun () ->
     let%bind () = make_input_csv "1.csv" in
     let%bind () = make_input_csv "2.csv" in
     let%bind () = run "csv" [ "cut"; "-fields"; "quantity"; "1.csv"; "2.csv" ] in
-    [%expect
-      {|
+    [%expect {|
       quantity
       4
       6
       2
-      quantity
       4
       6
       2 |}];
@@ -166,7 +167,7 @@ let%expect_test "incorrect duplication of header" =
 ;;
 
 let%expect_test "properly cut a csv that's loaded into memory" =
-  let f row = Csvlib.Csv.print [ row ] in
+  let f row = Csvlib.Csv.print [ Array.to_list row ] in
   let () =
     Cut.cut_by_field_names
       (Csv example_csv)
