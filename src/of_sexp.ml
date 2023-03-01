@@ -58,4 +58,5 @@ let command =
          |> Pipe.iter' ~f:(fun rows ->
            Csvlib.Csv.print ~separator (Queue.to_list rows);
            return ()))
+    ~behave_nicely_in_pipeline:false
 ;;

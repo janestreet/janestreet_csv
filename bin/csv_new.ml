@@ -68,6 +68,7 @@ module Grep = struct
            ~grep_fields
            ~regexp
            file)
+      ~behave_nicely_in_pipeline:false
   ;;
 end
 
@@ -163,6 +164,7 @@ module Id = struct
            | Stdin -> force Reader.stdin |> return
          in
          Lib.Id.run ~sep reader (force Writer.stdout))
+      ~behave_nicely_in_pipeline:false
   ;;
 end
 
@@ -184,6 +186,7 @@ module Validate = struct
          | Error msg ->
            prerr_endline msg;
            exit 1)
+      ~behave_nicely_in_pipeline:false
   ;;
 end
 
@@ -202,5 +205,6 @@ module Header = struct
            | Stdin -> force Reader.stdin |> return
          in
          Lib.Id.run ~sep ~add_header reader (force Writer.stdout))
+      ~behave_nicely_in_pipeline:false
   ;;
 end

@@ -91,7 +91,7 @@ let write_output ~keys ~aggregations ~sep data =
     w
     (keys @ List.map aggregations ~f:(fun (col, agg) -> col ^ "_" ^ Agg.name agg))
   >>= fun () ->
-  Deferred.Map.iteri data ~f:(fun ~key ~data ->
+  Deferred.Map.iteri ~how:`Sequential data ~f:(fun ~key ~data ->
     if not (Pipe.is_closed w)
     then Pipe.write w (key @ List.map data ~f:(fun (_, agg) -> Agg.get_val agg))
     else Deferred.unit)
@@ -174,4 +174,5 @@ let command =
          | csv ->
            Reader.with_file csv ~f:(process_input_file ~sep ~keys ~aggregations ~init))
        >>= write_output ~sep ~keys ~aggregations)
+    ~behave_nicely_in_pipeline:false
 ;;

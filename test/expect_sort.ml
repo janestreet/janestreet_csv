@@ -202,7 +202,7 @@ let%expect_test "inference" =
     ]
   in
   let%bind () =
-    Deferred.List.iter headers ~f:(fun field ->
+    Deferred.List.iter ~how:`Sequential headers ~f:(fun field ->
       print_newline ();
       print_endline [%string "sorted by %{field}\n================="];
       sort_test ~data ~field [])

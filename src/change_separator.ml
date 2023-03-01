@@ -40,4 +40,4 @@ let main =
     Pipe.close w
 ;;
 
-let command = Command.async main ~summary
+let command = Command.async main ~summary ~behave_nicely_in_pipeline:false

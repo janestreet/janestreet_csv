@@ -106,7 +106,9 @@ let sort_on_field ~sort_type ~field ~reverse csv =
         { Line_with_sort_key.key = List.nth_exn line idx; line })
     in
     let (T { lines; compare }) = Sort_type.convert sort_type lines in
-    let compare = if reverse then Comparable.reverse compare else compare in
+    let compare =
+      if reverse then fun a b -> Comparable.reverse compare a b else compare
+    in
     let compare = Line_with_sort_key.compare compare in
     Array.stable_sort lines ~compare;
     let lines = Array.map lines ~f:Line_with_sort_key.line |> Array.to_list in
