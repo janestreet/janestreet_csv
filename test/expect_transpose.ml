@@ -52,9 +52,7 @@ let%expect_test _ =
 let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_ragged_csv "input.csv" in
-    let%bind () =
-      run ~enable_ocaml_backtraces:false "csv" [ "transpose"; "input.csv" ]
-    in
+    let%bind () = run ~enable_ocaml_backtraces:false "csv" [ "transpose"; "input.csv" ] in
     [%expect
       {|
     ("Unclean exit" (Exit_non_zero 1))

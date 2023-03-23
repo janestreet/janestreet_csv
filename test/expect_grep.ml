@@ -19,8 +19,7 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     (* We're not trying to test the regex implementation here. *)
     let%bind () = run "csv" [ "grep"; "input.csv"; "-regexp"; "r" ] in
-    [%expect
-      "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r"];
+    [%expect "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r"];
     return ())
 ;;
 
@@ -105,8 +104,7 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = system "csv grep -regexp r < input.csv" in
-    [%expect
-      "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r "];
+    [%expect "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r "];
     return ())
 ;;
 
@@ -115,8 +113,7 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = system "csv grep -regexp r - < input.csv" in
-    [%expect
-      "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r "];
+    [%expect "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r "];
     return ())
 ;;
 
@@ -124,9 +121,7 @@ let%expect_test _ =
 let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
-    let%bind () =
-      run "csv" [ "grep"; "input.csv"; "-regexp"; "r"; "-skip-lines"; "1" ]
-    in
+    let%bind () = run "csv" [ "grep"; "input.csv"; "-regexp"; "r"; "-skip-lines"; "1" ] in
     [%expect "\n    apple,4,Abraham\r\n    orange,2,Cyrus\r"];
     return ())
 ;;

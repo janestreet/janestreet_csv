@@ -16,8 +16,7 @@ let%expect_test "simple" =
         Writer.flushed writer)
     in
     let%bind () = run "csv" [ "id"; "input.csv" ] in
-    [%expect
-      {|
+    [%expect {|
       foo,bar,baz
       1,2,3
       x,y,z

@@ -58,9 +58,7 @@ let%expect_test _ =
         ]
     in
     let%bind () =
-      run
-        "csv"
-        [ "join"; "-join"; "left"; "-field"; "name"; "numbers.csv"; "fruit.csv" ]
+      run "csv" [ "join"; "-join"; "left"; "-field"; "name"; "numbers.csv"; "fruit.csv" ]
     in
     [%expect
       {|
@@ -178,9 +176,7 @@ let%expect_test _ =
         ]
     in
     let%bind () =
-      run
-        "csv"
-        [ "join"; "-field"; "name"; "-join"; "full"; "numbers.csv"; "fruit.csv" ]
+      run "csv" [ "join"; "-field"; "name"; "-join"; "full"; "numbers.csv"; "fruit.csv" ]
     in
     [%expect
       {|

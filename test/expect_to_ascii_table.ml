@@ -32,9 +32,7 @@ let%expect_test _ =
 let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
-    let%bind () =
-      run "csv" [ "to-ascii-table"; "-limit-width-to"; "30"; "input.csv" ]
-    in
+    let%bind () = run "csv" [ "to-ascii-table"; "-limit-width-to"; "30"; "input.csv" ] in
     [%expect
       {|
     ┌────────┬────────┬──────────┐

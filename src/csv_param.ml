@@ -175,8 +175,8 @@ module T = struct
 
     let of_string s =
       match String.split s ~on:'=' with
-      | [ key ] -> (key, None : t)
-      | [ key; value ] -> (key, Some value : t)
+      | [ key ] -> ((key, None) : t)
+      | [ key; value ] -> ((key, Some value) : t)
       | _ -> failwithf "Couldn't parse key=value pair: %s" s ()
     ;;
 

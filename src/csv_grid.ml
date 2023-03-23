@@ -28,9 +28,7 @@ let grid ~field ~start ~stop ~step csv =
     in
     let lines =
       List.fold grid_times ~init:(0, []) ~f:(fun (prior_line_idx, l) grid_time ->
-        let new_idx =
-          increment_to_max_on_or_before_grid_time prior_line_idx grid_time
-        in
+        let new_idx = increment_to_max_on_or_before_grid_time prior_line_idx grid_time in
         if new_idx < 0
         then (
           let add_line = Array.copy dummy_line in
