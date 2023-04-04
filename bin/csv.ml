@@ -42,10 +42,24 @@ let cut_command ~deprecated =
     (let%map_open sep = sep
      and headers_wanted = headers_wanted fields
      and suppress_header = suppress_header
+     and no_header =
+       flag
+         "-no-headers"
+         ~doc:
+           "treat the CSV file as if it did not have headers; fields will be interpreted \
+            as indices"
+         no_arg
      and files = anon (sequence ("FILE" %: Filename_unix.arg_type)) in
      fun () ->
+       if no_header && suppress_header
+       then failwith "-suppress-header implies headers, but provided -no-headers too";
+       let cutfn =
+         match no_header with
+         | true -> Cut.cut_by_field_indices
+         | false -> Cut.cut_by_field_names
+       in
        let handle_file ~skip_header file =
-         Cut.cut_by_field_names file ~sep headers_wanted ~skip_header ~f:(fun row ->
+         cutfn file ~sep headers_wanted ~skip_header ~f:(fun row ->
            Csvlib.Csv.print [ Array.to_list row ])
        in
        match files with

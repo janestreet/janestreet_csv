@@ -72,6 +72,8 @@
 : === flags ===
 : 
 :   [-fields _], --fields      . named fields to extract, comma separated
+:   [-no-headers]              . treat the CSV file as if it did not have headers;
+:                                fields will be interpreted as indices
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')
 :   [-sh], -suppress-header, --suppress-header
@@ -88,6 +90,8 @@
 : === flags ===
 : 
 :   [-fields _], --fields      . named fields to extract, comma separated
+:   [-no-headers]              . treat the CSV file as if it did not have headers;
+:                                fields will be interpreted as indices
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')
 :   [-sh], -suppress-header, --suppress-header

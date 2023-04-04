@@ -56,11 +56,24 @@ let get_positions header_row headers_wanted =
       if Set.mem headers header then None else Some pos)
 ;;
 
-let cut_by_field_names file ~skip_header ~sep ~f headers_wanted =
+let index_positions header_row headers_wanted =
+  match headers_wanted with
+  | `Limit_to headers -> Array.of_list_map headers ~f:Int.of_string
+  | `All_but headers ->
+    let headers = List.map headers ~f:Int.of_string |> Int.Set.of_list in
+    Array.filter_mapi header_row ~f:(fun pos _ ->
+      if Set.mem headers pos then None else Some pos)
+;;
+
+let cut_by_fields file ~consume_header_names ~skip_header ~sep ~f headers_wanted =
   let handle_row = ref (fun _ -> assert false) in
   (handle_row
    := fun row ->
-     let positions = get_positions row headers_wanted in
+     let positions =
+       match consume_header_names with
+       | true -> get_positions row headers_wanted
+       | false -> index_positions row headers_wanted
+     in
      let grab row =
        Array.map positions ~f:(fun i -> if Array.length row < i then "" else row.(i))
      in
@@ -68,6 +81,9 @@ let cut_by_field_names file ~skip_header ~sep ~f headers_wanted =
      handle_row := fun row -> f (grab row));
   load_rows file ~sep ~f:(fun row -> !handle_row row)
 ;;
+
+let cut_by_field_names = cut_by_fields ~consume_header_names:true
+let cut_by_field_indices = cut_by_fields ~consume_header_names:false
 
 exception First_row of string list
 

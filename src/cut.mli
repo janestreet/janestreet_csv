@@ -17,6 +17,7 @@ type row_processor =
 (* cut the rows down to just the columns matching [headers] and apply [f] to each new row *)
 
 val cut_by_field_names : row_processor
+val cut_by_field_indices : row_processor
 
 val regex_match
   :  Csv_common.Or_file.t
