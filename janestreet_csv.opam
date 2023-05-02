@@ -1,10 +1,10 @@
 opam-version: "2.0"
 maintainer: "Jane Street developers"
 authors: ["Jane Street Group, LLC"]
-homepage: "https://github.com/janestreet/csv"
-bug-reports: "https://github.com/janestreet/csv/issues"
-dev-repo: "git+https://github.com/janestreet/csv.git"
-doc: "https://ocaml.janestreet.com/ocaml-core/latest/doc/csv/index.html"
+homepage: "https://github.com/janestreet/janestreet_csv"
+bug-reports: "https://github.com/janestreet/janestreet_csv/issues"
+dev-repo: "git+https://github.com/janestreet/janestreet_csv.git"
+doc: "https://ocaml.janestreet.com/ocaml-core/latest/doc/janestreet_csv/index.html"
 license: "MIT"
 build: [
   ["dune" "build" "-p" name "-j" jobs]

@@ -1,4 +1,4 @@
-(library (name csv_tool_lib) (public_name csv.csv_tool_lib)
+(library (name csv_tool_lib) (public_name janestreet_csv.csv_tool_lib)
  (libraries textutils.ascii_table async bignum core_kernel.composition_infix
   csvfields.csvlib delimited_parsing core_kernel.enum fieldslib
   core_unix.filename_unix tyxml numeric_string pcre re2)
