@@ -76,7 +76,9 @@ module Rows_by_key = struct
       ~f:(fun channel ->
         let rows = Csv.load_in ~separator:sep channel in
         match
-          List.dedup_and_sort (List.map rows ~f:List.length) ~compare:[%compare: int]
+          List.dedup_and_sort
+            (List.map rows ~f:(List.length :> _ -> _))
+            ~compare:[%compare: int]
         with
         | [] | [ _ ] -> rows
         | _ -> failwithf "rows in %s have different lengths" file ())
