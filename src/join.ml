@@ -68,7 +68,7 @@ module Rows_by_key = struct
     { data_by_key : Row.t list Key.Map.t (* header for each row in [data_by_key]. *)
     ; header : Row.t
     }
-  [@@deriving fields, sexp]
+  [@@deriving fields ~getters, sexp]
 
   let load_rows file ~sep =
     protectx

@@ -5,7 +5,7 @@ type t =
   { kv_maps : (string String.Map.t * string String.Map.t) list
   ; header_map : string Int.Map.t
   }
-[@@deriving fields]
+[@@deriving fields ~getters]
 
 let create kv_maps header_map = { kv_maps; header_map }
 
