@@ -93,42 +93,42 @@ let prettify_internal ~space ~suppress_header csv =
            columns
            ~init:("", [])
            ~f:(fun (header, col_type) (base_row, header_rows) ->
-             let bar_place, column_width =
-               match col_type with
-               | `String width -> 0, width
-               | `Number (pad_float : Pad_floats.t) ->
-                 pad_float.digits_before_dot - 1, Pad_floats.width pad_float
-             in
-             let header_width = String.length header in
-             let header_offset = Int.max 0 (bar_place + 1 - header_width) in
-             let pad = String.make column_width ' ' in
-             let bar_pad =
-               String.mapi pad ~f:(fun i c -> if i = bar_place then '|' else c)
-             in
-             let rec add = function
-               | [] -> [ String.make header_offset ' ' ^ header, 0 ]
-               | (text, num_blanks) :: rest ->
-                 if column_width + num_blanks >= header_width
-                 then (
-                   let pad text = pad ^ sep ^ text in
-                   let text = Bytes.of_string (pad text) in
-                   Bytes.From_string.blit
-                     ~src:header
-                     ~src_pos:0
-                     ~dst:text
-                     ~dst_pos:header_offset
-                     ~len:header_width;
-                   (Bytes.to_string text, 0)
-                   :: List.map rest ~f:(fun (text, num_blanks) ->
-                     pad text, column_width + sep_width + num_blanks))
-                 else (bar_pad ^ sep ^ text, 0) :: add rest
-             in
-             let base_row =
-               if String.equal base_row ""
-               then String.rstrip bar_pad
-               else bar_pad ^ sep ^ base_row
-             in
-             base_row, add header_rows)
+           let bar_place, column_width =
+             match col_type with
+             | `String width -> 0, width
+             | `Number (pad_float : Pad_floats.t) ->
+               pad_float.digits_before_dot - 1, Pad_floats.width pad_float
+           in
+           let header_width = String.length header in
+           let header_offset = Int.max 0 (bar_place + 1 - header_width) in
+           let pad = String.make column_width ' ' in
+           let bar_pad =
+             String.mapi pad ~f:(fun i c -> if i = bar_place then '|' else c)
+           in
+           let rec add = function
+             | [] -> [ String.make header_offset ' ' ^ header, 0 ]
+             | (text, num_blanks) :: rest ->
+               if column_width + num_blanks >= header_width
+               then (
+                 let pad text = pad ^ sep ^ text in
+                 let text = Bytes.of_string (pad text) in
+                 Bytes.From_string.blit
+                   ~src:header
+                   ~src_pos:0
+                   ~dst:text
+                   ~dst_pos:header_offset
+                   ~len:header_width;
+                 (Bytes.to_string text, 0)
+                 :: List.map rest ~f:(fun (text, num_blanks) ->
+                      pad text, column_width + sep_width + num_blanks))
+               else (bar_pad ^ sep ^ text, 0) :: add rest
+           in
+           let base_row =
+             if String.equal base_row ""
+             then String.rstrip bar_pad
+             else bar_pad ^ sep ^ base_row
+           in
+           base_row, add header_rows)
        in
        hd :: List.map ~f:fst tl)
   in
@@ -139,20 +139,20 @@ let prettify_internal ~space ~suppress_header csv =
       csv
       |> List.transpose_exn
       |> List.map ~f:(function
-        | [] -> assert false
-        | header :: values ->
-          let col_type = col_type values in
-          let width, pad =
-            match col_type with
-            | `String ->
-              let width = max_length values in
-              `String width, pad_right ~width
-            | `Number ->
-              let pad_floats = Pad_floats.max_length values in
-              `Number pad_floats, Pad_floats.pad pad_floats
-          in
-          let header_info = header, width in
-          header_info, List.map values ~f:pad)
+           | [] -> assert false
+           | header :: values ->
+             let col_type = col_type values in
+             let width, pad =
+               match col_type with
+               | `String ->
+                 let width = max_length values in
+                 `String width, pad_right ~width
+               | `Number ->
+                 let pad_floats = Pad_floats.max_length values in
+                 `Number pad_floats, Pad_floats.pad pad_floats
+             in
+             let header_info = header, width in
+             header_info, List.map values ~f:pad)
     in
     let header_lines =
       if suppress_header then [] else header_block (List.map cols ~f:fst)

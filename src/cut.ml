@@ -45,11 +45,11 @@ let get_positions header_row headers_wanted =
     in
     Array.of_list headers
     |> Array.map ~f:(fun header ->
-      match Map.find hmap header with
-      | Some position -> position
-      | None ->
-        (try Int.of_string header with
-         | _ -> raise_s [%message "Unknown header" ~_:(header : string)]))
+         match Map.find hmap header with
+         | Some position -> position
+         | None ->
+           (try Int.of_string header with
+            | _ -> raise_s [%message "Unknown header" ~_:(header : string)]))
   | `All_but headers ->
     let headers = String.Set.of_list headers in
     Array.filter_mapi header_row ~f:(fun pos header ->
@@ -68,17 +68,17 @@ let index_positions header_row headers_wanted =
 let cut_by_fields file ~consume_header_names ~skip_header ~sep ~f headers_wanted =
   let handle_row = ref (fun _ -> assert false) in
   (handle_row
-   := fun row ->
-     let positions =
-       match consume_header_names with
-       | true -> get_positions row headers_wanted
-       | false -> index_positions row headers_wanted
-     in
-     let grab row =
-       Array.map positions ~f:(fun i -> if Array.length row < i then "" else row.(i))
-     in
-     if not skip_header then f (grab row);
-     handle_row := fun row -> f (grab row));
+     := fun row ->
+          let positions =
+            match consume_header_names with
+            | true -> get_positions row headers_wanted
+            | false -> index_positions row headers_wanted
+          in
+          let grab row =
+            Array.map positions ~f:(fun i -> if Array.length row < i then "" else row.(i))
+          in
+          if not skip_header then f (grab row);
+          handle_row := fun row -> f (grab row));
   load_rows file ~sep ~f:(fun row -> !handle_row row)
 ;;
 
@@ -122,18 +122,18 @@ let split_populated_rows file ~skip_header ~sep ~f_populated ~f_unpopulated head
   =
   let handle_row = ref (fun _ -> assert false) in
   (handle_row
-   := fun row ->
-     let positions = get_positions row headers_wanted in
-     let populated row =
-       let n = Array.length row in
-       Array.for_all positions ~f:(fun i -> i < n && String.length row.(i) > 0)
-     in
-     if not skip_header
-     then (
-       f_populated row;
-       f_unpopulated row);
-     handle_row
-     := fun row -> if populated row then f_populated row else f_unpopulated row);
+     := fun row ->
+          let positions = get_positions row headers_wanted in
+          let populated row =
+            let n = Array.length row in
+            Array.for_all positions ~f:(fun i -> i < n && String.length row.(i) > 0)
+          in
+          if not skip_header
+          then (
+            f_populated row;
+            f_unpopulated row);
+          handle_row
+            := fun row -> if populated row then f_populated row else f_unpopulated row);
   load_rows file ~sep ~f:(fun row -> !handle_row row)
 ;;
 

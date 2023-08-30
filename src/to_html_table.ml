@@ -7,16 +7,16 @@ let convert_attrs string_attrs =
 ;;
 
 let run
-      ?separator
-      ~no_header
-      ~suppress_header
-      ~table_attrs
-      ~th_attrs
-      ~tr_attrs
-      ~td_attrs
-      ~border
-      ~unescaped_html
-      file
+  ?separator
+  ~no_header
+  ~suppress_header
+  ~table_attrs
+  ~th_attrs
+  ~tr_attrs
+  ~td_attrs
+  ~border
+  ~unescaped_html
+  file
   =
   Or_file.with_all file ?separator ~f:(fun csv ->
     let table_attrs =
@@ -41,10 +41,10 @@ let run
       let td_attrs = convert_attrs td_attrs in
       (if no_header && not suppress_header then csv.header :: csv.lines else csv.lines)
       |> List.map ~f:(fun line ->
-        Tyxml.Html.tr
-          ~a:tr_attrs
-          (List.map line ~f:(fun value ->
-             Tyxml.Html.(td ~a:td_attrs [ field_to_html value ]))))
+           Tyxml.Html.tr
+             ~a:tr_attrs
+             (List.map line ~f:(fun value ->
+                Tyxml.Html.(td ~a:td_attrs [ field_to_html value ]))))
     in
     let document = Tyxml.Html.table ~a:table_attrs (Option.to_list header @ rows) in
     Format.printf "%a" (Tyxml.Html.pp_elt ()) document)

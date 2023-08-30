@@ -79,8 +79,8 @@ let join_command =
      and key_fields =
        flag "-field" (listed string) ~doc:"FIELD field(s) on which to join"
        |> map ~f:(function
-         | [] -> failwith "must pass at least one -field"
-         | fields -> Array.of_list fields)
+            | [] -> failwith "must pass at least one -field"
+            | fields -> Array.of_list fields)
      and join = Join.param
      and files = anon (sequence ("FILE" %: Filename_unix.arg_type)) in
      fun () ->
@@ -153,7 +153,6 @@ let fields_command =
        | [] -> handle_file Stdin
        | hd :: _ -> handle_file (File hd))
 ;;
-
 
 let to_sexp_command =
   let summary = "to sexp" in

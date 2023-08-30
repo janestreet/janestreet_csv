@@ -56,7 +56,7 @@ let command =
            let row = Row.parse_sexp row in
            row_number + 1, Row.to_csv_row row ~header ~row_number)
          |> Pipe.iter' ~f:(fun rows ->
-           Csvlib.Csv.print ~separator (Queue.to_list rows);
-           return ()))
+              Csvlib.Csv.print ~separator (Queue.to_list rows);
+              return ()))
     ~behave_nicely_in_pipeline:false
 ;;

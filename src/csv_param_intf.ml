@@ -7,7 +7,6 @@ module Open_on_rhs_intf = struct
       include Command.Param
     end
 
-
     val file_stdin_anon : Csv_common.Or_file.t t
     val file_stdin_flag : Csv_common.Or_file.t t
     val files : string list t
@@ -48,6 +47,6 @@ module type Csv_param = sig
 
   include
     Applicative.Let_syntax
-    with type 'a t := 'a Command.Param.t
-    with module Open_on_rhs_intf := Open_on_rhs_intf
+      with type 'a t := 'a Command.Param.t
+      with module Open_on_rhs_intf := Open_on_rhs_intf
 end

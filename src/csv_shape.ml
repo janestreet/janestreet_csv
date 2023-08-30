@@ -59,9 +59,9 @@ let to_clumps ns =
   List.sort ~compare:Int.compare ns
   |> List.group ~break:(fun a b -> a + 1 <> b)
   |> List.map ~f:(function
-    | [] -> assert false
-    | [ i ] -> One i
-    | x :: xs -> Span (x, List.last_exn xs))
+       | [] -> assert false
+       | [ i ] -> One i
+       | x :: xs -> Span (x, List.last_exn xs))
 ;;
 
 let to_error_string t =
@@ -74,12 +74,12 @@ let to_error_string t =
         row_indexes_by_length
         |> Map.to_alist
         |> List.map ~f:(fun (n, rows_with_n_cols) ->
-          n, List.length rows_with_n_cols, to_clumps rows_with_n_cols)
+             n, List.length rows_with_n_cols, to_clumps rows_with_n_cols)
         |> List.sort ~compare:(fun a b ->
-          let size (_, n, _) = n in
-          -Int.compare (size a) (size b))
+             let size (_, n, _) = n in
+             -Int.compare (size a) (size b))
         |> List.map ~f:(fun (a, b, clumps) ->
-          [ Int.to_string a; Int.to_string b; string_of_clumps clumps ])
+             [ Int.to_string a; Int.to_string b; string_of_clumps clumps ])
       in
       [ "N"; "number of lines with N columns"; "lines with N columns" ] :: rows
     in

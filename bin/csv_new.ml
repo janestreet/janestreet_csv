@@ -46,11 +46,11 @@ module Grep = struct
         "grep in csv fields (using the re2 regular expression engine), while keeping the \
          header"
       (let%map_open.Csv_param
-        (* The default behavior is to print header only if there are output rows. It
+         (* The default behavior is to print header only if there are output rows. It
            is less good a behavior, but it is historically what this command did. *)
-        separator
-        =
-        sep
+         separator
+         =
+         sep
        and skip_lines = skip_lines
        and grep_fields = Lib.Grep.Target_fields.param
        and file = file_stdin_anon
