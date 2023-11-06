@@ -157,6 +157,30 @@ module T = struct
 
   let fields = fields_gen ~doc:" named fields to extract, comma separated"
 
+  let fields_backward_compat =
+    let open Command.Param in
+    let arg_type =
+      Arg_type.comma_separated ~strip_whitespace:true string ~allow_empty:true
+    in
+    flag
+      ~aliases:[ "-f"; "--field" ]
+      "-field"
+      (optional_with_default [] arg_type)
+      ~doc:" named fields to sort on, comma separated (outermost sort first)"
+  ;;
+
+  let reverse_fields =
+    let open Command.Param in
+    let arg_type =
+      Arg_type.comma_separated ~strip_whitespace:true string ~allow_empty:true
+    in
+    flag
+      ~aliases:[ "--reverse-fields" ]
+      "-reverse-fields"
+      (optional_with_default [] arg_type)
+      ~doc:" fields for which to reverse the sort order"
+  ;;
+
   let pop_fields =
     fields_gen ~doc:" named fields required to count as fully populated, comma separated"
   ;;

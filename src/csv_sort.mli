@@ -1,5 +1,12 @@
 open! Core
 
+module Order : sig
+  type t =
+    | Ascending
+    | Descending
+  [@@deriving compare, enumerate, sexp_of]
+end
+
 module Sort_type : sig
   type t =
     | Bytes
@@ -11,21 +18,18 @@ module Sort_type : sig
     | String
     | Time
   [@@deriving compare, enumerate, sexp_of]
-
-  val param : t Command.Param.t
 end
 
-val sort_on_field
-  :  sort_type:Sort_type.t
-  -> field:string
-  -> reverse:bool
-  -> Csv_common.t
-  -> Csv_common.t
+module Sort_column : sig
+  type t =
+    { field : string
+    ; order : Order.t
+    ; sort_type : Sort_type.t
+    }
+  [@@deriving sexp_of]
 
-val run
-  :  ?separator:char
-  -> ?reverse:bool
-  -> sort_type:Sort_type.t
-  -> field:string
-  -> Csv_common.Or_file.t
-  -> unit
+  val param : t list Command.Param.t
+end
+
+val sort_on_fields : Sort_column.t list -> Csv_common.t -> Csv_common.t
+val run : ?separator:char -> Sort_column.t list -> Csv_common.Or_file.t -> unit

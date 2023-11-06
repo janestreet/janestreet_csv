@@ -238,3 +238,1024 @@ let%expect_test "inference" =
     c,2,2m,0.17e4 |}];
   return ()
 ;;
+
+let multi_column_sort_test ~extra_args =
+  let headers = [ "string"; "int"; "bytes"; "float" ] in
+  let data =
+    [ headers
+      (* 1g vs 3k in bytes column chosen to detect if we're just ignoring the suffix. *)
+    ; [ "b"; "2"; "1g"; "0.17e4" ]
+    ; [ "b"; "1"; "1g"; "0.17e4" ]
+    ; [ "b"; "1"; "1g"; "   2.5" ]
+    ; [ "a"; "1"; "1g"; "   2.5" ]
+    ; [ "a"; "2"; "3k"; "0.17e4" ]
+    ; [ "a"; "1"; "3k"; "0.17e4" ]
+    ; [ "b"; "1"; "3k"; "   2.5" ]
+    ; [ "a"; "1"; "1g"; "0.17e4" ]
+    ; [ "a"; "1"; "3k"; "   2.5" ]
+    ; [ "b"; "2"; "3k"; "0.17e4" ]
+    ; [ "b"; "1"; "3k"; "0.17e4" ]
+    ; [ "a"; "2"; "1g"; "0.17e4" ]
+    ; [ "a"; "2"; "1g"; "   2.5" ]
+    ; [ "b"; "2"; "1g"; "   2.5" ]
+    ; [ "a"; "2"; "3k"; "   2.5" ]
+    ; [ "b"; "2"; "3k"; "   2.5" ]
+    ]
+  in
+  List.cartesian_product headers headers
+  |> List.filter ~f:(fun (x, y) -> String.(x <> y))
+  |> Deferred.List.iter ~how:`Sequential ~f:(fun fields ->
+       let comma_separated_fields = [%string "%{fst fields},%{snd fields}"] in
+       print_newline ();
+       print_endline [%string "sorted by %{comma_separated_fields}\n================="];
+       sort_test ~data ~field:comma_separated_fields (extra_args ~fields))
+;;
+
+let%expect_test "multi-column" =
+  let%bind () = multi_column_sort_test ~extra_args:(fun ~fields:_ -> []) in
+  [%expect
+    {|
+    sorted by string,int
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+
+    sorted by string,bytes
+    =================
+    string,int,bytes,float
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+
+    sorted by string,float
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+
+    sorted by int,string
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+
+    sorted by int,bytes
+    =================
+    string,int,bytes,float
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+
+    sorted by int,float
+    =================
+    string,int,bytes,float
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+
+    sorted by bytes,string
+    =================
+    string,int,bytes,float
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+
+    sorted by bytes,int
+    =================
+    string,int,bytes,float
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+
+    sorted by bytes,float
+    =================
+    string,int,bytes,float
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+
+    sorted by float,string
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+
+    sorted by float,int
+    =================
+    string,int,bytes,float
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+
+    sorted by float,bytes
+    =================
+    string,int,bytes,float
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4 |}];
+  return ()
+;;
+
+let%expect_test "multi-column-all-rev" =
+  let%bind () = multi_column_sort_test ~extra_args:(fun ~fields:_ -> [ "-reverse" ]) in
+  [%expect
+    {|
+    sorted by string,int
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+
+    sorted by string,bytes
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+
+    sorted by string,float
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+
+    sorted by int,string
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+
+    sorted by int,bytes
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+
+    sorted by int,float
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+
+    sorted by bytes,string
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+
+    sorted by bytes,int
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+
+    sorted by bytes,float
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+
+    sorted by float,string
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+
+    sorted by float,int
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+
+    sorted by float,bytes
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5 |}];
+  return ()
+;;
+
+let%expect_test "multi-column-one-rev" =
+  let%bind () =
+    multi_column_sort_test ~extra_args:(fun ~fields:(x, _) -> [ "-reverse-fields"; x ])
+  in
+  [%expect
+    {|
+    sorted by string,int
+    =================
+    string,int,bytes,float
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+
+    sorted by string,bytes
+    =================
+    string,int,bytes,float
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+
+    sorted by string,float
+    =================
+    string,int,bytes,float
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+
+    sorted by int,string
+    =================
+    string,int,bytes,float
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+
+    sorted by int,bytes
+    =================
+    string,int,bytes,float
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+
+    sorted by int,float
+    =================
+    string,int,bytes,float
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+
+    sorted by bytes,string
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+
+    sorted by bytes,int
+    =================
+    string,int,bytes,float
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+
+    sorted by bytes,float
+    =================
+    string,int,bytes,float
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+
+    sorted by float,string
+    =================
+    string,int,bytes,float
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+
+    sorted by float,int
+    =================
+    string,int,bytes,float
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+
+    sorted by float,bytes
+    =================
+    string,int,bytes,float
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5 |}];
+  return ()
+;;
+
+let%expect_test "multi-column-sort-types" =
+  let%bind () =
+    multi_column_sort_test ~extra_args:(fun ~fields:_ ->
+      [ "-field-types"; "string,natsort" ])
+  in
+  [%expect
+    {|
+    sorted by string,int
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+
+    sorted by string,bytes
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+
+    sorted by string,float
+    =================
+    string,int,bytes,float
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+
+    sorted by int,string
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,1,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    a,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+
+    sorted by int,bytes
+    =================
+    string,int,bytes,float
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+
+    sorted by int,float
+    =================
+    string,int,bytes,float
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+
+    sorted by bytes,string
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,1,3k,   2.5
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,2,3k,   2.5
+
+    sorted by bytes,int
+    =================
+    string,int,bytes,float
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    b,2,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    b,1,3k,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+
+    sorted by bytes,float
+    =================
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+
+    sorted by float,string
+    =================
+    string,int,bytes,float
+    a,1,1g,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    a,2,3k,   2.5
+    b,1,1g,   2.5
+    b,1,3k,   2.5
+    b,2,1g,   2.5
+    b,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4
+
+    sorted by float,int
+    =================
+    string,int,bytes,float
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,1,1g,0.17e4
+    a,1,3k,0.17e4
+    a,1,1g,0.17e4
+    b,1,3k,0.17e4
+    b,2,1g,0.17e4
+    a,2,3k,0.17e4
+    b,2,3k,0.17e4
+    a,2,1g,0.17e4
+
+    sorted by float,bytes
+    =================
+    string,int,bytes,float
+    b,1,1g,   2.5
+    a,1,1g,   2.5
+    a,2,1g,   2.5
+    b,2,1g,   2.5
+    b,1,3k,   2.5
+    a,1,3k,   2.5
+    a,2,3k,   2.5
+    b,2,3k,   2.5
+    b,2,1g,0.17e4
+    b,1,1g,0.17e4
+    a,1,1g,0.17e4
+    a,2,1g,0.17e4
+    a,2,3k,0.17e4
+    a,1,3k,0.17e4
+    b,2,3k,0.17e4
+    b,1,3k,0.17e4 |}];
+  return ()
+;;

@@ -19,13 +19,11 @@ end
 module Sort = struct
   let command =
     Command.basic
-      ~summary:"stably sort a csv file on a given column"
+      ~summary:"stably sort a csv file on a given column(s)"
       (let%map_open.Csv_param separator = sep
        and file = file_stdin_anon
-       and field = field' ~aliases:[ "-f"; "--field" ]
-       and sort_type = Lib.Csv_sort.Sort_type.param
-       and reverse = reverse in
-       fun () -> Lib.Csv_sort.run ~separator ~sort_type ~field ~reverse file)
+       and sort_columns = Lib.Csv_sort.Sort_column.param in
+       fun () -> Lib.Csv_sort.run sort_columns file ~separator)
   ;;
 end
 

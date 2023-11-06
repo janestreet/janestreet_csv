@@ -23,7 +23,7 @@
 :   pop                        . filter to rows which have certain fields fully
 :                                populated
 :   pretty                     . pretty printer for csv files
-:   sort                       . stably sort a csv file on a given column
+:   sort                       . stably sort a csv file on a given column(s)
 :   sum                        . sum columns (use 0 for a cell if Float.of_string
 :                                fails). All rows must have the same length
 :   sum-group                  . sum a csv file, grouping by specified fields,
@@ -265,18 +265,20 @@
 
 ** sort
 
-: stably sort a csv file on a given column
+: stably sort a csv file on a given column(s)
 : 
 :   csv.exe sort [FILENAME]
 : 
 : === flags ===
 : 
-:   -field <field>, -f, --field
-:                              . field name to sort on
-:   [-field-type _], --field-type
-:                              . field type for sorting (default: infer) (can be:
-:                                bytes, float, infer, int, natsort, span, string,
-:                                time)
+:   [-field _], -f, --field    . named fields to sort on, comma separated
+:                                (outermost sort first)
+:   [-field-types _], --field-types
+:                              . field type for sorting (default: infer) (can be
+:                                comma-separated values: bytes, float, infer, int,
+:                                natsort, span, string, time) (default: "")
+:   [-reverse-fields _], --reverse-fields
+:                              . fields for which to reverse the sort order
 :   [-reverse], --reverse      . reverse sorting order
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')

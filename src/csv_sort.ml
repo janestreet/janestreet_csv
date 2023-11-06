@@ -75,12 +75,12 @@ module Sort_type = struct
   include T
 
   let param =
-    Enum.make_param_optional_with_default_doc
-      "-field-type"
+    Enum.make_param_optional_comma_separated_with_default_doc
+      "-field-types"
       (module T)
-      ~aliases:[ "--field-type" ]
-      ~default:Infer
-      ~doc:"field type for sorting"
+      ~aliases:[ "--field-types" ]
+      ~default:[]
+      ~doc:"field type for sorting (default: infer)"
       ~represent_choice_with:"_"
   ;;
 
@@ -97,7 +97,70 @@ module Sort_type = struct
   ;;
 end
 
-let sort_on_field ~sort_type ~field ~reverse csv =
+module Order = struct
+  type t =
+    | Ascending
+    | Descending
+  [@@deriving compare, enumerate, sexp_of]
+end
+
+module Sort_column = struct
+  type t =
+    { field : string
+    ; order : Order.t
+    ; sort_type : Sort_type.t
+    }
+  [@@deriving sexp_of]
+
+  let param : t list Command.Param.t =
+    let%map_open.Command () = return ()
+    and fields = Csv_param.fields_backward_compat
+    and sort_types = Sort_type.param
+    and reverse = Csv_param.reverse
+    and reverse_fields = Csv_param.reverse_fields in
+    let l v = List.map fields ~f:(const v) in
+    let sort_types =
+      match sort_types with
+      | [] -> l Sort_type.Infer
+      | _ :: _ ->
+        (match List.length sort_types = List.length fields with
+         | true -> sort_types
+         | false ->
+           failwith
+             "when specifying sort types you must specify one per sort field, in the \
+              same order as the sort fields")
+    in
+    let orders =
+      match reverse, reverse_fields with
+      | true, _ :: _ -> failwith "may not specify both -reverse and -reverse-fields"
+      | true, [] ->
+        l Order.Descending (* an empty reverse list will reverse all sort fields *)
+      | false, [] -> l Order.Ascending
+      | false, reverse_fields ->
+        let reverse_fields = String.Set.of_list reverse_fields in
+        (match Set.is_subset reverse_fields ~of_:(String.Set.of_list fields) with
+         | true ->
+           List.map fields ~f:(fun field : Order.t ->
+             if Set.mem reverse_fields field then Descending else Ascending)
+         | false -> failwith "-reverse-fields must list a subset of the sort fields")
+    in
+    let num_fields = List.length fields in
+    let num_orders = List.length orders in
+    let num_sort_types = List.length sort_types in
+    if num_fields <> num_orders
+    then raise_s [%message "BUG" (num_fields : int) "<>" (num_orders : int)];
+    if num_fields <> num_sort_types
+    then
+      failwith
+        [%string
+          "Unequal number of fields (%{num_fields#Int}) and sort_types \
+           (%{num_sort_types#Int})"];
+    List.zip_exn (List.zip_exn fields sort_types) orders
+    |> List.map ~f:(fun ((field, sort_type), order) -> { field; order; sort_type })
+  ;;
+end
+
+let sort_on_field ({ field; order; sort_type } : Sort_column.t) csv =
   match List.findi csv.header ~f:(fun _idx elem -> String.( = ) elem field) with
   | None -> failwithf "unable to find csv field %s" field ()
   | Some (idx, _) ->
@@ -107,7 +170,9 @@ let sort_on_field ~sort_type ~field ~reverse csv =
     in
     let (T { lines; compare }) = Sort_type.convert sort_type lines in
     let compare =
-      if reverse then fun a b -> Comparable.reverse compare a b else compare
+      match order with
+      | Ascending -> compare
+      | Descending -> fun a b -> Comparable.reverse compare a b
     in
     let compare = Line_with_sort_key.compare compare in
     Array.stable_sort lines ~compare;
@@ -115,7 +180,9 @@ let sort_on_field ~sort_type ~field ~reverse csv =
     { header = csv.header; lines }
 ;;
 
-let run ?separator ?(reverse = false) ~sort_type ~field file =
+let sort_on_fields ts csv = List.fold_right ts ~init:csv ~f:sort_on_field
+
+let run ?separator ts file =
   Or_file.with_all file ?separator ~f:(fun csv ->
-    csv |> sort_on_field ~sort_type ~field ~reverse |> print_csv ?separator)
+    csv |> sort_on_fields ts |> print_csv ?separator)
 ;;

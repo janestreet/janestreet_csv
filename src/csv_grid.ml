@@ -48,7 +48,7 @@ let grid ~field ~start ~stop ~step csv =
 let run ?separator ~field ~start ~stop ~step file =
   Or_file.with_all ?separator file ~f:(fun csv ->
     csv
-    |> Csv_sort.sort_on_field ~sort_type:Time ~field ~reverse:false
+    |> Csv_sort.sort_on_fields [ { field; order = Ascending; sort_type = Time } ]
     |> grid ~field ~start ~stop ~step
     |> print_csv ?separator)
 ;;

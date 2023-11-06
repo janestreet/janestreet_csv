@@ -11,6 +11,7 @@ module Open_on_rhs_intf = struct
     val file_stdin_flag : Csv_common.Or_file.t t
     val files : string list t
     val reverse : bool t
+    val reverse_fields : string list t
     val field : string t
     val field' : aliases:string list -> string t
     val time_field : string t
@@ -31,6 +32,7 @@ module Open_on_rhs_intf = struct
     val suppress_header : bool t
     val fields_gen : doc:string -> string list t
     val fields : string list t
+    val fields_backward_compat : string list t
     val pop_fields : string list t
     val exclude_fields : bool t
     val table_attrs : (string * string option) list t
