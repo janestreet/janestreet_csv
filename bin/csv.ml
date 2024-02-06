@@ -10,8 +10,14 @@ let headers_wanted wanted_fields =
   if exclude then `All_but fields else `Limit_to fields
 ;;
 
-let pretty_command =
-  let summary = "pretty printer for csv files" in
+let pretty_command ?alias_for () =
+  let summary =
+    "pretty printer for csv files"
+    ^
+    match alias_for with
+    | None -> ""
+    | Some other_command -> [%string " (alias for %{other_command} subcommand)"]
+  in
   Command.basic
     ~summary
     (let%map_open separator = sep
@@ -189,7 +195,8 @@ let command =
     ; "join", join_command
     ; "diff", diff_command
     ; "pop", pop_command
-    ; "pretty", pretty_command
+    ; "pp", pretty_command ~alias_for:"pretty" ()
+    ; "pretty", pretty_command ()
     ; "unpop", unpop_command
     ; "fields", fields_command
     ; "to-sexp", to_sexp_command

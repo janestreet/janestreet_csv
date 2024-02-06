@@ -22,6 +22,8 @@
 :   of-sexp                    . of sexp
 :   pop                        . filter to rows which have certain fields fully
 :                                populated
+:   pp                         . pretty printer for csv files (alias for pretty
+:                                subcommand)
 :   pretty                     . pretty printer for csv files
 :   sort                       . stably sort a csv file on a given column(s)
 :   sum                        . sum columns (use 0 for a cell if Float.of_string
@@ -246,6 +248,21 @@
 :   [-sh], -suppress-header, --suppress-header
 :                              . keep the header row from appearing in the output
 :   [-v], --invert-match       . exclude specified fields rather than extract them
+:   [-help], -?                . print this help text and exit
+
+** pp
+
+: pretty printer for csv files (alias for pretty subcommand)
+: 
+:   csv.exe pp [FILE]
+: 
+: === flags ===
+: 
+:   [-s NUM]                   . how far apart to space out columns (default: '2')
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
+:   [-sh], -suppress-header, --suppress-header
+:                              . keep the header row from appearing in the output
 :   [-help], -?                . print this help text and exit
 
 ** pretty
