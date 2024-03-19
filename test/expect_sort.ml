@@ -37,7 +37,8 @@ let%expect_test _ =
     Bathsheba,2,2.2,0001-01-01T0500+10:00
     Cyrus,2,3.3,0002-01-01T0000-00:00
     Deborah,04,4.4,0003-01-01T0000-00:00
-    Elijah,5,6.5,0004-01-01T0000-00:00 |}];
+    Elijah,5,6.5,0004-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -51,7 +52,8 @@ let%expect_test _ =
     Deborah,04,4.4,0003-01-01T0000-00:00
     Cyrus,2,3.3,0002-01-01T0000-00:00
     Bathsheba,2,2.2,0001-01-01T0500+10:00
-    Abraham,1,1.1,0001-01-01T0000-00:00 |}];
+    Abraham,1,1.1,0001-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -65,7 +67,8 @@ let%expect_test _ =
     Bathsheba,2,2.2,0001-01-01T0500+10:00
     Cyrus,2,3.3,0002-01-01T0000-00:00
     Deborah,04,4.4,0003-01-01T0000-00:00
-    Elijah,5,6.5,0004-01-01T0000-00:00 |}];
+    Elijah,5,6.5,0004-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -79,7 +82,8 @@ let%expect_test _ =
     Abraham,1,1.1,0001-01-01T0000-00:00
     Bathsheba,2,2.2,0001-01-01T0500+10:00
     Cyrus,2,3.3,0002-01-01T0000-00:00
-    Elijah,5,6.5,0004-01-01T0000-00:00 |}];
+    Elijah,5,6.5,0004-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -93,7 +97,8 @@ let%expect_test _ =
     Deborah,04,4.4,0003-01-01T0000-00:00
     Bathsheba,2,2.2,0001-01-01T0500+10:00
     Cyrus,2,3.3,0002-01-01T0000-00:00
-    Abraham,1,1.1,0001-01-01T0000-00:00 |}];
+    Abraham,1,1.1,0001-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -107,7 +112,8 @@ let%expect_test _ =
     Bathsheba,2,2.2,0001-01-01T0500+10:00
     Cyrus,2,3.3,0002-01-01T0000-00:00
     Deborah,04,4.4,0003-01-01T0000-00:00
-    Elijah,5,6.5,0004-01-01T0000-00:00 |}];
+    Elijah,5,6.5,0004-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -122,7 +128,8 @@ let%expect_test _ =
     Abraham,1,1.1,0001-01-01T0000-00:00
     Cyrus,2,3.3,0002-01-01T0000-00:00
     Deborah,04,4.4,0003-01-01T0000-00:00
-    Elijah,5,6.5,0004-01-01T0000-00:00 |}];
+    Elijah,5,6.5,0004-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -136,7 +143,8 @@ let%expect_test _ =
     Bathsheba.2."2.2".0001-01-01T0500+10:00
     Cyrus.2."3.3".0002-01-01T0000-00:00
     Deborah.04."4.4".0003-01-01T0000-00:00
-    Elijah.5."6.5".0004-01-01T0000-00:00 |}];
+    Elijah.5."6.5".0004-01-01T0000-00:00
+    |}];
   return ()
 ;;
 
@@ -155,19 +163,21 @@ let%expect_test _ =
   let%bind () = sort "string" in
   [%expect
     {|
-      name_with_ints,value
-      sys1,foo
-      sys10,baz
-      sys2,bar
-      sys200,qwux |}];
+    name_with_ints,value
+    sys1,foo
+    sys10,baz
+    sys2,bar
+    sys200,qwux
+    |}];
   let%bind () = sort "natsort" in
   [%expect
     {|
-      name_with_ints,value
-      sys1,foo
-      sys2,bar
-      sys10,baz
-      sys200,qwux |}];
+    name_with_ints,value
+    sys1,foo
+    sys2,bar
+    sys10,baz
+    sys200,qwux
+    |}];
   return ()
 ;;
 
@@ -181,13 +191,15 @@ let%expect_test "bytes, spans" =
     latency,size
     1ns,1K
     3us,1.2G
-    2h,17b |}];
+    2h,17b
+    |}];
   let%bind () = sort "size" "bytes" in
   [%expect {|
     latency,size
     2h,17b
     1ns,1K
-    3us,1.2G |}];
+    3us,1.2G
+    |}];
   return ()
 ;;
 
@@ -235,7 +247,8 @@ let%expect_test "inference" =
     string,int,bytes,float
     d,5,3k,2.5
     a,4,1g,3
-    c,2,2m,0.17e4 |}];
+    c,2,2m,0.17e4
+    |}];
   return ()
 ;;
 
@@ -513,7 +526,8 @@ let%expect_test "multi-column" =
     b,2,1g,0.17e4
     b,1,1g,0.17e4
     a,1,1g,0.17e4
-    a,2,1g,0.17e4 |}];
+    a,2,1g,0.17e4
+    |}];
   return ()
 ;;
 
@@ -759,7 +773,8 @@ let%expect_test "multi-column-all-rev" =
     b,1,3k,   2.5
     a,1,3k,   2.5
     a,2,3k,   2.5
-    b,2,3k,   2.5 |}];
+    b,2,3k,   2.5
+    |}];
   return ()
 ;;
 
@@ -1007,7 +1022,8 @@ let%expect_test "multi-column-one-rev" =
     b,1,1g,   2.5
     a,1,1g,   2.5
     a,2,1g,   2.5
-    b,2,1g,   2.5 |}];
+    b,2,1g,   2.5
+    |}];
   return ()
 ;;
 
@@ -1256,6 +1272,7 @@ let%expect_test "multi-column-sort-types" =
     a,2,3k,0.17e4
     a,1,3k,0.17e4
     b,2,3k,0.17e4
-    b,1,3k,0.17e4 |}];
+    b,1,3k,0.17e4
+    |}];
   return ()
 ;;

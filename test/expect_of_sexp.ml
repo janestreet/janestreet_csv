@@ -12,7 +12,8 @@ let%expect_test "good input" =
     [%expect {|
       F1,F2,F3
       X1,Y1,Z1
-      X2,Y2,Z2 |}];
+      X2,Y2,Z2
+      |}];
     return ())
 ;;
 
@@ -26,7 +27,8 @@ let%expect_test "sep" =
     [%expect {|
       F1|F2|F3
       X1|Y1|Z1
-      X2|Y2|Z2 |}];
+      X2|Y2|Z2
+      |}];
     return ())
 ;;
 
@@ -39,7 +41,8 @@ let%expect_test "no header" =
     let%bind () = run ~stdin:input "csv" [ "of-sexp"; "-nh" ] in
     [%expect {|
       X1,Y1,Z1
-      X2,Y2,Z2 |}];
+      X2,Y2,Z2
+      |}];
     return ())
 ;;
 
@@ -57,7 +60,8 @@ let%expect_test "fields not in header" =
       ("Unclean exit" (Exit_non_zero 1))
       --- STDERR ---
       (monitor.ml.Error
-       ("Missing field in a row." (field F2) (row 2) ((F1 X2) (F3 Z2) (G2 Y2)))) |}];
+       ("Missing field in a row." (field F2) (row 2) ((F1 X2) (F3 Z2) (G2 Y2))))
+      |}];
     return ())
 ;;
 
@@ -74,7 +78,8 @@ let%expect_test "detect fields not in header even if not printing header" =
       ("Unclean exit" (Exit_non_zero 1))
       --- STDERR ---
       (monitor.ml.Error
-       ("Missing field in a row." (field F2) (row 2) ((F1 X2) (F3 Z2) (G2 Y2)))) |}];
+       ("Missing field in a row." (field F2) (row 2) ((F1 X2) (F3 Z2) (G2 Y2))))
+      |}];
     return ())
 ;;
 
@@ -88,7 +93,8 @@ let%expect_test "fields reordered" =
     [%expect {|
       F1,F2,F3
       X1,Y1,Z1
-      X2,Z2,Y2 |}];
+      X2,Z2,Y2
+      |}];
     return ())
 ;;
 
@@ -107,7 +113,8 @@ let%expect_test "field omitted" =
       --- STDERR ---
       (monitor.ml.Error
        ("Row has wrong number of fields." (header (F1 F2 F3)) (row 2)
-        ((F1 X2) (F2 Y2)))) |}];
+        ((F1 X2) (F2 Y2))))
+      |}];
     return ())
 ;;
 
@@ -135,6 +142,7 @@ let%expect_test "duplicate fields" =
        ("Malformed row sexp."
         (exn
          (Of_sexp_error "Map.t_of_sexp_direct: duplicate key" (invalid_sexp F2)))
-        (sexp ((F1 X2) (F2 Y2) (F2 Y3))))) |}];
+        (sexp ((F1 X2) (F2 Y2) (F2 Y3)))))
+      |}];
     return ())
 ;;

@@ -21,13 +21,14 @@ let%expect_test _ =
     let%bind () = run "csv" [ "pretty"; "input.csv" ] in
     [%expect
       {|
-    fruit   quantity    owner
-    |           |       |
-    apple   40000.5     Abraham
-    apple       6.25    Bathsheba
-    orange      0.0125  Cyrus
-    lemon       7       Dave
-    peach               Ezekiel |}];
+      fruit   quantity    owner
+      |           |       |
+      apple   40000.5     Abraham
+      apple       6.25    Bathsheba
+      orange      0.0125  Cyrus
+      lemon       7       Dave
+      peach               Ezekiel
+      |}];
     return ())
 ;;
 
@@ -37,13 +38,14 @@ let%expect_test _ =
     let%bind () = system "csv pretty < input.csv" in
     [%expect
       {|
-    fruit   quantity    owner
-    |           |       |
-    apple   40000.5     Abraham
-    apple       6.25    Bathsheba
-    orange      0.0125  Cyrus
-    lemon       7       Dave
-    peach               Ezekiel |}];
+      fruit   quantity    owner
+      |           |       |
+      apple   40000.5     Abraham
+      apple       6.25    Bathsheba
+      orange      0.0125  Cyrus
+      lemon       7       Dave
+      peach               Ezekiel
+      |}];
     return ())
 ;;
 
@@ -53,11 +55,12 @@ let%expect_test _ =
     let%bind () = run "csv" [ "pretty"; "-sh"; "input.csv" ] in
     [%expect
       {|
-    apple   40000.5     Abraham
-    apple       6.25    Bathsheba
-    orange      0.0125  Cyrus
-    lemon       7       Dave
-    peach               Ezekiel |}];
+      apple   40000.5     Abraham
+      apple       6.25    Bathsheba
+      orange      0.0125  Cyrus
+      lemon       7       Dave
+      peach               Ezekiel
+      |}];
     return ())
 ;;
 
@@ -67,13 +70,14 @@ let%expect_test _ =
     let%bind () = run "csv" [ "pretty"; "-s"; "10"; "input.csv" ] in
     [%expect
       {|
-    fruit           quantity            owner
-    |                   |               |
-    apple           40000.5             Abraham
-    apple               6.25            Bathsheba
-    orange              0.0125          Cyrus
-    lemon               7               Dave
-    peach                               Ezekiel |}];
+      fruit           quantity            owner
+      |                   |               |
+      apple           40000.5             Abraham
+      apple               6.25            Bathsheba
+      orange              0.0125          Cyrus
+      lemon               7               Dave
+      peach                               Ezekiel
+      |}];
     return ())
 ;;
 
@@ -83,13 +87,14 @@ let%expect_test _ =
     let%bind () = run "csv" [ "pretty"; "-d"; "/"; "input.csv" ] in
     [%expect
       {|
-    fruit,quantity,owner
-    |
-    apple,40000.5,Abraham
-    apple,6.25,Bathsheba
-    orange,0.0125,Cyrus
-    lemon,7,Dave
-    peach,,Ezekiel |}];
+      fruit,quantity,owner
+      |
+      apple,40000.5,Abraham
+      apple,6.25,Bathsheba
+      orange,0.0125,Cyrus
+      lemon,7,Dave
+      peach,,Ezekiel
+      |}];
     return ())
 ;;
 
@@ -99,13 +104,14 @@ let%expect_test _ =
     let%bind () = run "csv" [ "pretty"; "-d"; "."; "input.csv" ] in
     [%expect
       {|
-    fruit   quantity    owner
-    |           |       |
-    apple   40000.5     Abraham
-    apple       6.25    Bathsheba
-    orange      0.0125  Cyrus
-    lemon       7       Dave
-    peach               Ezekiel |}];
+      fruit   quantity    owner
+      |           |       |
+      apple   40000.5     Abraham
+      apple       6.25    Bathsheba
+      orange      0.0125  Cyrus
+      lemon       7       Dave
+      peach               Ezekiel
+      |}];
     return ())
 ;;
 
@@ -117,15 +123,16 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Error parsing command line:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Error parsing command line:
 
-      too many anonymous arguments
+        too many anonymous arguments
 
-    For usage information, run
+      For usage information, run
 
-      csv pretty -help |}];
+        csv pretty -help
+      |}];
     return ())
 ;;
 
@@ -149,12 +156,13 @@ let%expect_test _ =
     let%bind () = run "csv" [ "pretty"; "input.csv" ] in
     [%expect
       {|
-    fruit    quan       owner
-    |           |       |
-    apple   40000.5     Abraham
-    apple       6.25    Bathsheba
-    orange      0.0125  Cyrus
-    lemon       7       Dave
-    peach               Ezekiel |}];
+      fruit    quan       owner
+      |           |       |
+      apple   40000.5     Abraham
+      apple       6.25    Bathsheba
+      orange      0.0125  Cyrus
+      lemon       7       Dave
+      peach               Ezekiel
+      |}];
     return ())
 ;;

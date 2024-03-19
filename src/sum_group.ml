@@ -87,13 +87,13 @@ let write_output ~keys ~aggregations ~sep data =
   let w =
     Delimited.Write.Expert.By_row.of_writer_and_close ~sep (Lazy.force Writer.stdout)
   in
-  Pipe.write
+  Pipe.write_if_open
     w
     (keys @ List.map aggregations ~f:(fun (col, agg) -> col ^ "_" ^ Agg.name agg))
   >>= fun () ->
   Deferred.Map.iteri ~how:`Sequential data ~f:(fun ~key ~data ->
     if not (Pipe.is_closed w)
-    then Pipe.write w (key @ List.map data ~f:(fun (_, agg) -> Agg.get_val agg))
+    then Pipe.write_if_open w (key @ List.map data ~f:(fun (_, agg) -> Agg.get_val agg))
     else Deferred.unit)
   >>| fun () -> Pipe.close w
 ;;

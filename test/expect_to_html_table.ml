@@ -26,33 +26,34 @@ let%expect_test _ =
     let%bind () = test [ "input.csv" ] in
     [%expect
       {|
-        <table border="0">
-          <tr>
-            <th>fruit</th>
-            <th>quantity</th>
-            <th>owner</th>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>4</td>
-            <td>Abraham</td>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>6</td>
-            <td>Bathsheba</td>
-          </tr>
-          <tr>
-            <td>orange</td>
-            <td>2</td>
-            <td>Cyrus</td>
-          </tr>
-          <tr>
-            <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
-            <td>3</td>
-            <td>Darragh</td>
-          </tr>
-        </table>|}];
+      <table border="0">
+        <tr>
+          <th>fruit</th>
+          <th>quantity</th>
+          <th>owner</th>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>4</td>
+          <td>Abraham</td>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>6</td>
+          <td>Bathsheba</td>
+        </tr>
+        <tr>
+          <td>orange</td>
+          <td>2</td>
+          <td>Cyrus</td>
+        </tr>
+        <tr>
+          <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
+          <td>3</td>
+          <td>Darragh</td>
+        </tr>
+      </table>
+      |}];
     return ())
 ;;
 
@@ -62,33 +63,34 @@ let%expect_test _ =
     let%bind () = test [ "-border"; "-td"; "align=center"; "input.csv" ] in
     [%expect
       {|
-        <table border="1">
-          <tr>
-            <th>fruit</th>
-            <th>quantity</th>
-            <th>owner</th>
-          </tr>
-          <tr>
-            <td align="center">apple</td>
-            <td align="center">4</td>
-            <td align="center">Abraham</td>
-          </tr>
-          <tr>
-            <td align="center">apple</td>
-            <td align="center">6</td>
-            <td align="center">Bathsheba</td>
-          </tr>
-          <tr>
-            <td align="center">orange</td>
-            <td align="center">2</td>
-            <td align="center">Cyrus</td>
-          </tr>
-          <tr>
-            <td align="center">&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
-            <td align="center">3</td>
-            <td align="center">Darragh</td>
-          </tr>
-        </table>|}];
+      <table border="1">
+        <tr>
+          <th>fruit</th>
+          <th>quantity</th>
+          <th>owner</th>
+        </tr>
+        <tr>
+          <td align="center">apple</td>
+          <td align="center">4</td>
+          <td align="center">Abraham</td>
+        </tr>
+        <tr>
+          <td align="center">apple</td>
+          <td align="center">6</td>
+          <td align="center">Bathsheba</td>
+        </tr>
+        <tr>
+          <td align="center">orange</td>
+          <td align="center">2</td>
+          <td align="center">Cyrus</td>
+        </tr>
+        <tr>
+          <td align="center">&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
+          <td align="center">3</td>
+          <td align="center">Darragh</td>
+        </tr>
+      </table>
+      |}];
     return ())
 ;;
 
@@ -98,33 +100,34 @@ let%expect_test _ =
     let%bind () = test [ "-sep"; "."; "-th"; "bgcolor=red"; "input.csv" ] in
     [%expect
       {|
-        <table border="0">
-          <tr>
-            <th bgcolor="red">fruit</th>
-            <th bgcolor="red">quantity</th>
-            <th bgcolor="red">owner</th>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>4</td>
-            <td>Abraham</td>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>6</td>
-            <td>Bathsheba</td>
-          </tr>
-          <tr>
-            <td>orange</td>
-            <td>2</td>
-            <td>Cyrus</td>
-          </tr>
-          <tr>
-            <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
-            <td>3</td>
-            <td>Darragh</td>
-          </tr>
-        </table>|}];
+      <table border="0">
+        <tr>
+          <th bgcolor="red">fruit</th>
+          <th bgcolor="red">quantity</th>
+          <th bgcolor="red">owner</th>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>4</td>
+          <td>Abraham</td>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>6</td>
+          <td>Bathsheba</td>
+        </tr>
+        <tr>
+          <td>orange</td>
+          <td>2</td>
+          <td>Cyrus</td>
+        </tr>
+        <tr>
+          <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
+          <td>3</td>
+          <td>Darragh</td>
+        </tr>
+      </table>
+      |}];
     return ())
 ;;
 
@@ -134,33 +137,34 @@ let%expect_test _ =
     let%bind () = test [ "-nh"; "-table"; "cellpadding=5"; "input.csv" ] in
     [%expect
       {|
-        <table border="0" cellpadding="5">
-          <tr>
-            <td>fruit</td>
-            <td>quantity</td>
-            <td>owner</td>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>4</td>
-            <td>Abraham</td>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>6</td>
-            <td>Bathsheba</td>
-          </tr>
-          <tr>
-            <td>orange</td>
-            <td>2</td>
-            <td>Cyrus</td>
-          </tr>
-          <tr>
-            <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
-            <td>3</td>
-            <td>Darragh</td>
-          </tr>
-        </table>|}];
+      <table border="0" cellpadding="5">
+        <tr>
+          <td>fruit</td>
+          <td>quantity</td>
+          <td>owner</td>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>4</td>
+          <td>Abraham</td>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>6</td>
+          <td>Bathsheba</td>
+        </tr>
+        <tr>
+          <td>orange</td>
+          <td>2</td>
+          <td>Cyrus</td>
+        </tr>
+        <tr>
+          <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
+          <td>3</td>
+          <td>Darragh</td>
+        </tr>
+      </table>
+      |}];
     return ())
 ;;
 
@@ -170,28 +174,29 @@ let%expect_test _ =
     let%bind () = test [ "-sh"; "input.csv" ] in
     [%expect
       {|
-        <table border="0">
-          <tr>
-            <td>apple</td>
-            <td>4</td>
-            <td>Abraham</td>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>6</td>
-            <td>Bathsheba</td>
-          </tr>
-          <tr>
-            <td>orange</td>
-            <td>2</td>
-            <td>Cyrus</td>
-          </tr>
-          <tr>
-            <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
-            <td>3</td>
-            <td>Darragh</td>
-          </tr>
-        </table>|}];
+      <table border="0">
+        <tr>
+          <td>apple</td>
+          <td>4</td>
+          <td>Abraham</td>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>6</td>
+          <td>Bathsheba</td>
+        </tr>
+        <tr>
+          <td>orange</td>
+          <td>2</td>
+          <td>Cyrus</td>
+        </tr>
+        <tr>
+          <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
+          <td>3</td>
+          <td>Darragh</td>
+        </tr>
+      </table>
+      |}];
     return ())
 ;;
 
@@ -201,35 +206,36 @@ let%expect_test _ =
     let%bind () = test [ "-unescaped-html"; "input.csv" ] in
     [%expect
       {|
-        <table border="0">
-          <tr>
-            <th>fruit</th>
-            <th>quantity</th>
-            <th>owner</th>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>4</td>
-            <td>Abraham</td>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>6</td>
-            <td>Bathsheba</td>
-          </tr>
-          <tr>
-            <td>orange</td>
-            <td>2</td>
-            <td>Cyrus</td>
-          </tr>
-          <tr>
-            <td>
-              <a href="https://en.wikipedia.org/wiki/Kiwifruit">kiwi</a>
-            </td>
-            <td>3</td>
-            <td>Darragh</td>
-          </tr>
-        </table>|}];
+      <table border="0">
+        <tr>
+          <th>fruit</th>
+          <th>quantity</th>
+          <th>owner</th>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>4</td>
+          <td>Abraham</td>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>6</td>
+          <td>Bathsheba</td>
+        </tr>
+        <tr>
+          <td>orange</td>
+          <td>2</td>
+          <td>Cyrus</td>
+        </tr>
+        <tr>
+          <td>
+            <a href="https://en.wikipedia.org/wiki/Kiwifruit">kiwi</a>
+          </td>
+          <td>3</td>
+          <td>Darragh</td>
+        </tr>
+      </table>
+      |}];
     return ())
 ;;
 
@@ -239,27 +245,28 @@ let%expect_test "suppress & no header interaction" =
     let%bind () = test [ "-sh"; "-nh"; "input.csv" ] in
     [%expect
       {|
-        <table border="0">
-          <tr>
-            <td>apple</td>
-            <td>4</td>
-            <td>Abraham</td>
-          </tr>
-          <tr>
-            <td>apple</td>
-            <td>6</td>
-            <td>Bathsheba</td>
-          </tr>
-          <tr>
-            <td>orange</td>
-            <td>2</td>
-            <td>Cyrus</td>
-          </tr>
-          <tr>
-            <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
-            <td>3</td>
-            <td>Darragh</td>
-          </tr>
-        </table>|}];
+      <table border="0">
+        <tr>
+          <td>apple</td>
+          <td>4</td>
+          <td>Abraham</td>
+        </tr>
+        <tr>
+          <td>apple</td>
+          <td>6</td>
+          <td>Bathsheba</td>
+        </tr>
+        <tr>
+          <td>orange</td>
+          <td>2</td>
+          <td>Cyrus</td>
+        </tr>
+        <tr>
+          <td>&lt;a href=&quot;https://en.wikipedia.org/wiki/Kiwifruit&quot;&gt;kiwi&lt;/a&gt;</td>
+          <td>3</td>
+          <td>Darragh</td>
+        </tr>
+      </table>
+      |}];
     return ())
 ;;

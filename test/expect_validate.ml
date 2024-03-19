@@ -31,20 +31,23 @@ let%expect_test "ragged" =
 "x","y"|} in
     [%expect {|
       ("Unclean exit" (Exit_non_zero 1))
-      --- STDERR --- |}];
+      --- STDERR ---
+      |}];
     (* Row has more columns than header *)
     let%bind () = test {|"col1","col2","col3"
 "1","2","3"
 "x","y","z","a"|} in
     [%expect {|
       ("Unclean exit" (Exit_non_zero 1))
-      --- STDERR --- |}];
+      --- STDERR ---
+      |}];
     (* All rows have more columns than header, but by different amounts *)
     let%bind () = test {|"col1","col3"
 "1","2","3"
 "x","y","z","a"|} in
     [%expect {|
       ("Unclean exit" (Exit_non_zero 1))
-      --- STDERR --- |}];
+      --- STDERR ---
+      |}];
     return ())
 ;;

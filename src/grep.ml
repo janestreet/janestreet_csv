@@ -73,7 +73,7 @@ let run ?separator ?skip_lines ~invert ~always_print_header ~grep_fields ~regexp
         (match is_header_printed with
          | `Header_printed -> Deferred.return `Header_printed
          | `Haven't_printed_header ->
-           Pipe.write writer !the_headers >>| fun () -> `Header_printed)
+           Pipe.write_if_open writer !the_headers >>| fun () -> `Header_printed)
         >>= fun is_header_printed ->
         let matches_grep =
           Delimited.Read.Row.fold row ~init:false ~f:(fun print_it ~header ~data ->
@@ -87,12 +87,14 @@ let run ?separator ?skip_lines ~invert ~always_print_header ~grep_fields ~regexp
             if possible_to_check then Re2.matches regexp data else false)
         in
         (if Bool.( <> ) matches_grep invert
-         then Pipe.write writer (Delimited.Read.Row.to_list row)
+         then Pipe.write_if_open writer (Delimited.Read.Row.to_list row)
          else Deferred.unit)
         >>| fun () -> is_header_printed)
       >>= function
       | `Haven't_printed_header ->
-        if always_print_header then Pipe.write writer !the_headers else Deferred.unit
+        if always_print_header
+        then Pipe.write_if_open writer !the_headers
+        else Deferred.unit
       | `Header_printed -> Deferred.unit)
   in
   match (file : Csv_common.Or_file.t) with

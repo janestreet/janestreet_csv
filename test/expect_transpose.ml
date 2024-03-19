@@ -30,9 +30,10 @@ let%expect_test _ =
     let%bind () = run "csv" [ "transpose"; "input.csv" ] in
     [%expect
       {|
-    fruit,apple,apple,orange
-    quantity,4,6,2
-    owner,Abraham,Bathsheba,Cyrus |}];
+      fruit,apple,apple,orange
+      quantity,4,6,2
+      owner,Abraham,Bathsheba,Cyrus
+      |}];
     return ())
 ;;
 
@@ -42,9 +43,10 @@ let%expect_test _ =
     let%bind () = run "csv" [ "transpose"; "-sep"; "."; "input.csv" ] in
     [%expect
       {|
-    fruit.apple.apple.orange
-    quantity.4.6.2
-    owner.Abraham.Bathsheba.Cyrus |}];
+      fruit.apple.apple.orange
+      quantity.4.6.2
+      owner.Abraham.Bathsheba.Cyrus
+      |}];
     return ())
 ;;
 
@@ -55,11 +57,12 @@ let%expect_test _ =
     let%bind () = run ~enable_ocaml_backtraces:false "csv" [ "transpose"; "input.csv" ] in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      (list.ml.Transpose_got_lists_of_different_lengths (3 3 3 4)) |}];
+        (list.ml.Transpose_got_lists_of_different_lengths (3 3 3 4))
+      |}];
     return ())
 ;;
 
@@ -69,8 +72,9 @@ let%expect_test _ =
     let%bind () = Import.make_input_csv "input.csv" [ [ "foo"; "bar"; "baz" ] ] in
     let%bind () = run "csv" [ "transpose"; "input.csv" ] in
     [%expect {|
-    foo
-    bar
-    baz |}];
+      foo
+      bar
+      baz
+      |}];
     return ())
 ;;

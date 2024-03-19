@@ -19,7 +19,7 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     (* We're not trying to test the regex implementation here. *)
     let%bind () = run "csv" [ "grep"; "input.csv"; "-regexp"; "r" ] in
-    [%expect "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r"];
+    [%expect " \n fruit,quantity,owner\n apple,4,Abraham\n orange,2,Cyrus\n "];
     return ())
 ;;
 
@@ -31,7 +31,7 @@ let%expect_test _ =
       let fields = "quantity" in
       run "csv" [ "grep"; "input.csv"; "-regexp"; "r"; "-grep-fields"; fields ]
     in
-    [%expect "fruit,quantity,owner\r"];
+    [%expect "fruit,quantity,owner"];
     return ())
 ;;
 
@@ -43,7 +43,7 @@ let%expect_test _ =
       let fields = "fruit" in
       run "csv" [ "grep"; "input.csv"; "-regexp"; "r"; "-grep-fields"; fields ]
     in
-    [%expect "\n     fruit,quantity,owner\r\n     orange,2,Cyrus\r"];
+    [%expect " \n fruit,quantity,owner\n orange,2,Cyrus\n "];
     return ())
 ;;
 
@@ -55,7 +55,7 @@ let%expect_test _ =
       let fields = "quantity,fruit" in
       run "csv" [ "grep"; "input.csv"; "-regexp"; "r"; "-grep-fields"; fields ]
     in
-    [%expect "\n    fruit,quantity,owner\r\n    orange,2,Cyrus\r"];
+    [%expect " \n fruit,quantity,owner\n orange,2,Cyrus\n "];
     return ())
 ;;
 
@@ -69,7 +69,7 @@ let%expect_test _ =
         "csv"
         [ "grep"; "input.csv"; "-regexp"; "r"; "-grep-fields"; fields; "-sep"; "." ]
     in
-    [%expect "\n    fruit.quantity.owner\r\n    orange.2.Cyrus\r"];
+    [%expect " \n fruit.quantity.owner\n orange.2.Cyrus\n "];
     return ())
 ;;
 
@@ -81,7 +81,7 @@ let%expect_test _ =
       let fields = "vegetable" in
       run "csv" [ "grep"; "input.csv"; "-regexp"; "r"; "-grep-fields"; fields ]
     in
-    [%expect "fruit,quantity,owner\r"];
+    [%expect "fruit,quantity,owner"];
     return ())
 ;;
 
@@ -95,7 +95,7 @@ let%expect_test _ =
         "csv"
         [ "grep"; "input.csv"; "-regexp"; "r"; "-grep-fields"; fields; "-sep"; "." ]
     in
-    [%expect "fruit,quantity,owner\r"];
+    [%expect "fruit,quantity,owner"];
     return ())
 ;;
 
@@ -104,7 +104,7 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = system "csv grep -regexp r < input.csv" in
-    [%expect "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r "];
+    [%expect " \n fruit,quantity,owner\n apple,4,Abraham\n orange,2,Cyrus\n "];
     return ())
 ;;
 
@@ -113,7 +113,7 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = system "csv grep -regexp r - < input.csv" in
-    [%expect "\n    fruit,quantity,owner\r\n    apple,4,Abraham\r\n    orange,2,Cyrus\r "];
+    [%expect " \n fruit,quantity,owner\n apple,4,Abraham\n orange,2,Cyrus\n "];
     return ())
 ;;
 
@@ -122,7 +122,7 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "grep"; "input.csv"; "-regexp"; "r"; "-skip-lines"; "1" ] in
-    [%expect "\n    apple,4,Abraham\r\n    orange,2,Cyrus\r"];
+    [%expect " \n apple,4,Abraham\n orange,2,Cyrus\n "];
     return ())
 ;;
 
@@ -136,17 +136,18 @@ let%expect_test _ =
     in
     let%bind () = system "csv grep -grep-fields foo -regex foo input.csv | head" in
     [%expect
-      "\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r\n\
-      \    foo,bar,baz\r"];
+      " \n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ foo,bar,baz\n\
+      \ "];
     return ())
 ;;
 
@@ -165,7 +166,7 @@ let%expect_test _ =
     let%bind () =
       run "csv" [ "grep"; "-regex"; "foo"; "input.csv"; "-always-print-header" ]
     in
-    [%expect " foo,bar,baz "];
+    [%expect "foo,bar,baz"];
     return ())
 ;;
 
@@ -175,6 +176,6 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     (* We're not trying to test the regex implementation here. *)
     let%bind () = run "csv" [ "grep"; "input.csv"; "-invert-match"; "-regexp"; "r" ] in
-    [%expect "\n    fruit,quantity,owner\r\n    apple,6,Bathsheba\r"];
+    [%expect " \n fruit,quantity,owner\n apple,6,Bathsheba\n "];
     return ())
 ;;

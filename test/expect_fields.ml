@@ -18,9 +18,10 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "fields"; "input.csv" ] in
     [%expect {|
-    fruit
-    quantity
-    owner |}];
+      fruit
+      quantity
+      owner
+      |}];
     return ())
 ;;
 
@@ -39,9 +40,10 @@ let%expect_test _ =
     let%bind () = make_input_csv ~sep:'.' "input.csv" in
     let%bind () = run "csv" [ "fields"; "-d"; "."; "input.csv" ] in
     [%expect {|
-    fruit
-    quantity
-    owner |}];
+      fruit
+      quantity
+      owner
+      |}];
     return ())
 ;;
 

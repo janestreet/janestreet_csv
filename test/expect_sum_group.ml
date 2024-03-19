@@ -34,17 +34,18 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ┌──────────────────┬──────────────┐
-    │     quantity_sum │           12 │
-    ├──────────────────┼──────────────┤
-    │        price_sum │          0.8 │
-    │      fruit_count │            2 │
-    │       fruit_list │ apple;orange │
-    │ quantity_sum-pos │           12 │
-    │    price_sum-pos │          2.3 │
-    │ quantity_sum-neg │            0 │
-    │    price_sum-neg │         -1.5 │
-    └──────────────────┴──────────────┘ |}];
+      ┌──────────────────┬──────────────┐
+      │     quantity_sum │           12 │
+      ├──────────────────┼──────────────┤
+      │        price_sum │          0.8 │
+      │      fruit_count │            2 │
+      │       fruit_list │ apple;orange │
+      │ quantity_sum-pos │           12 │
+      │    price_sum-pos │          2.3 │
+      │ quantity_sum-neg │            0 │
+      │    price_sum-neg │         -1.5 │
+      └──────────────────┴──────────────┘
+      |}];
     return ())
 ;;
 
@@ -68,16 +69,17 @@ let%expect_test _ =
     in
     [%expect
       {|
-             ┌──────────────────┬───────┬────────┐
-             │            fruit │ apple │ orange │
-             ├──────────────────┼───────┼────────┤
-             │     quantity_sum │    10 │      2 │
-             │        price_sum │  -0.4 │    1.2 │
-             │ quantity_sum-pos │    10 │      2 │
-             │    price_sum-pos │   1.1 │    1.2 │
-             │ quantity_sum-neg │     0 │      0 │
-             │    price_sum-neg │  -1.5 │      0 │
-             └──────────────────┴───────┴────────┘  |}];
+      ┌──────────────────┬───────┬────────┐
+      │            fruit │ apple │ orange │
+      ├──────────────────┼───────┼────────┤
+      │     quantity_sum │    10 │      2 │
+      │        price_sum │  -0.4 │    1.2 │
+      │ quantity_sum-pos │    10 │      2 │
+      │    price_sum-pos │   1.1 │    1.2 │
+      │ quantity_sum-neg │     0 │      0 │
+      │    price_sum-neg │  -1.5 │      0 │
+      └──────────────────┴───────┴────────┘
+      |}];
     return ())
 ;;
 
@@ -111,10 +113,11 @@ let%expect_test _ =
         ]
     in
     [%expect
-      "\n\
-      \    \
-       quantity_sum.price_sum.fruit_count.fruit_list.quantity_sum-pos.price_sum-pos.quantity_sum-neg.price_sum-neg\r\n\
-      \    12.\"0.8\".2.apple;orange.12.\"2.3\".0.\"-1.5\"\r "];
+      " \n\
+      \ \
+       quantity_sum.price_sum.fruit_count.fruit_list.quantity_sum-pos.price_sum-pos.quantity_sum-neg.price_sum-neg\n\
+      \ 12.\"0.8\".2.apple;orange.12.\"2.3\".0.\"-1.5\"\n\
+      \ "];
     return ())
 ;;
 
@@ -122,7 +125,6 @@ let%expect_test "non-existent field" =
   do_test (fun () ->
     let stdin = "x,y" in
     let%bind () = run "csv" [ "sum-group"; "-"; "-sum"; "not-a-real-field" ] ~stdin in
-    [%expect {|
-      not-a-real-field_sum |}];
+    [%expect {| not-a-real-field_sum |}];
     return ())
 ;;

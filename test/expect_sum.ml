@@ -20,8 +20,9 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "sum"; "input.csv" ] in
     [%expect {|
-    int,float,string
-    1.,1.1,0. |}];
+      int,float,string
+      1.,1.1,0.
+      |}];
     return ())
 ;;
 
@@ -31,8 +32,9 @@ let%expect_test _ =
     let%bind () = make_input_csv ~sep:'/' "input.csv" in
     let%bind () = run "csv" [ "sum"; "input.csv"; "-sep"; "/" ] in
     [%expect {|
-    int/float/string
-    1./1.1/0. |}];
+      int/float/string
+      1./1.1/0.
+      |}];
     return ())
 ;;
 
@@ -43,10 +45,11 @@ let%expect_test _ =
     let%bind () = run ~enable_ocaml_backtraces:false "csv" [ "sum"; "input.csv" ] in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      (Invalid_argument "length mismatch in map2_exn: 3 <> 4") |}];
+        (Invalid_argument "length mismatch in map2_exn: 3 <> 4")
+      |}];
     return ())
 ;;

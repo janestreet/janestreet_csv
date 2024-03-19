@@ -31,11 +31,12 @@ let%expect_test _ =
     let%bind () = run "csv" [ "diff"; "-k"; "owner"; "before.csv"; "after.csv" ] in
     [%expect
       {|
-    fruit,quantity,owner
-    apple,4 --> 3,Abraham
-    apple,6 --> 7,Bathsheba
-    orange,3 --> 2,Cyrus
-    NONE --> orange,NONE --> 1,Deborah |}];
+      fruit,quantity,owner
+      apple,4 --> 3,Abraham
+      apple,6 --> 7,Bathsheba
+      orange,3 --> 2,Cyrus
+      NONE --> orange,NONE --> 1,Deborah
+      |}];
     return ())
 ;;
 
@@ -51,9 +52,10 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-      Csv_tool_lib__Key_specifier.Invalid_specifier("Column specifier formatted incorrectly") |}];
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+        Csv_tool_lib__Key_specifier.Invalid_specifier("Column specifier formatted incorrectly")
+      |}];
     return ())
 ;;
 
@@ -71,11 +73,12 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      ("Map.of_alist_exn: duplicate key" ((1 apple))) |}];
+        ("Map.of_alist_exn: duplicate key" ((1 apple)))
+      |}];
     return ())
 ;;
 
@@ -92,11 +95,12 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      (Invalid_argument "Key column 0 does not exist") |}];
+        (Invalid_argument "Key column 0 does not exist")
+      |}];
     return ())
 ;;
 
@@ -108,11 +112,12 @@ let%expect_test _ =
     let%bind () = run "csv" [ "diff"; "-nh"; "-k"; "3"; "before.csv"; "after.csv" ] in
     [%expect
       {|
-    1,2,3
-    apple,4 --> 3,Abraham
-    apple,6 --> 7,Bathsheba
-    orange,3 --> 2,Cyrus
-    NONE --> orange,NONE --> 1,Deborah |}];
+      1,2,3
+      apple,4 --> 3,Abraham
+      apple,6 --> 7,Bathsheba
+      orange,3 --> 2,Cyrus
+      NONE --> orange,NONE --> 1,Deborah
+      |}];
     return ())
 ;;
 
@@ -129,11 +134,12 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      (Invalid_argument "Key column 3 does not exist") |}];
+        (Invalid_argument "Key column 3 does not exist")
+      |}];
     return ())
 ;;
 
@@ -150,11 +156,12 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      ("Map.of_alist_exn: duplicate key" ((fruit apple))) |}];
+        ("Map.of_alist_exn: duplicate key" ((fruit apple)))
+      |}];
     return ())
 ;;
 
@@ -168,14 +175,15 @@ let%expect_test _ =
     in
     [%expect
       {|
-    fruit,quantity,owner
-    apple,4,Abraham --> NONE
-    apple,6,Bathsheba --> NONE
-    orange,3,Cyrus --> NONE
-    apple,3,NONE --> Abraham
-    apple,7,NONE --> Bathsheba
-    orange,2,NONE --> Cyrus
-    orange,1,NONE --> Deborah |}];
+      fruit,quantity,owner
+      apple,4,Abraham --> NONE
+      apple,6,Bathsheba --> NONE
+      orange,3,Cyrus --> NONE
+      apple,3,NONE --> Abraham
+      apple,7,NONE --> Bathsheba
+      orange,2,NONE --> Cyrus
+      orange,1,NONE --> Deborah
+      |}];
     return ())
 ;;
 
@@ -203,10 +211,11 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      ("Map.of_alist_exn: duplicate key" ((fruit orange) (quantity 1))) |}];
+        ("Map.of_alist_exn: duplicate key" ((fruit orange) (quantity 1)))
+      |}];
     return ())
 ;;

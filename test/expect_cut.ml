@@ -23,10 +23,11 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-fields"; "fruit"; "input.csv" ] in
     [%expect {|
-    fruit
-    apple
-    apple
-    orange |}];
+      fruit
+      apple
+      apple
+      orange
+      |}];
     return ())
 ;;
 
@@ -36,10 +37,11 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-fields"; "fruit,quantity"; "input.csv" ] in
     [%expect {|
-    fruit,quantity
-    apple,4
-    apple,6
-    orange,2 |}];
+      fruit,quantity
+      apple,4
+      apple,6
+      orange,2
+      |}];
     return ())
 ;;
 
@@ -49,10 +51,11 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-v"; "-fields"; "fruit,quantity"; "input.csv" ] in
     [%expect {|
-    owner
-    Abraham
-    Bathsheba
-    Cyrus |}];
+      owner
+      Abraham
+      Bathsheba
+      Cyrus
+      |}];
     return ())
 ;;
 
@@ -62,10 +65,11 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-v"; "-fields"; "owner"; "input.csv" ] in
     [%expect {|
-    fruit,quantity
-    apple,4
-    apple,6
-    orange,2 |}];
+      fruit,quantity
+      apple,4
+      apple,6
+      orange,2
+      |}];
     return ())
 ;;
 
@@ -75,9 +79,10 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-sh"; "-fields"; "fruit"; "input.csv" ] in
     [%expect {|
-    apple
-    apple
-    orange |}];
+      apple
+      apple
+      orange
+      |}];
     return ())
 ;;
 
@@ -93,12 +98,13 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
-       (buffer (fruit,quantity,owner)) (exn ("Unknown header" fruit))) |}];
+        ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
+         (buffer (fruit,quantity,owner)) (exn ("Unknown header" fruit)))
+      |}];
     return ())
 ;;
 
@@ -113,12 +119,13 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
-       (buffer (fruit,quantity,owner)) (exn ("Unknown header" fruit))) |}];
+        ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
+         (buffer (fruit,quantity,owner)) (exn ("Unknown header" fruit)))
+      |}];
     return ())
 ;;
 
@@ -128,10 +135,11 @@ let%expect_test _ =
     let%bind () = make_input_csv ~sep:'.' "input.csv" in
     let%bind () = run "csv" [ "cut"; "-d"; "."; "-fields"; "fruit"; "input.csv" ] in
     [%expect {|
-    fruit
-    apple
-    apple
-    orange |}];
+      fruit
+      apple
+      apple
+      orange
+      |}];
     return ())
 ;;
 
@@ -142,10 +150,11 @@ let%expect_test _ =
       run "csv" [ "cut"; "-d"; "."; "-fields"; "fruit,quantity"; "input.csv" ]
     in
     [%expect {|
-    fruit,quantity
-    apple,4
-    apple,6
-    orange,2 |}];
+      fruit,quantity
+      apple,4
+      apple,6
+      orange,2
+      |}];
     return ())
 ;;
 
@@ -162,7 +171,8 @@ let%expect_test "incorrect duplication of header" =
       2
       4
       6
-      2 |}];
+      2
+      |}];
     return ())
 ;;
 
@@ -177,12 +187,13 @@ let%expect_test "properly cut a csv that's loaded into memory" =
       (`All_but [ "quantity" ])
   in
   return
-    [%expect {|
-    fruit,owner
-    apple,Abraham
-    apple,Bathsheba
-    orange,Cyrus
-|}]
+    [%expect
+      {|
+      fruit,owner
+      apple,Abraham
+      apple,Bathsheba
+      orange,Cyrus
+      |}]
 ;;
 
 let%expect_test "cut a CSV with no headers" =
@@ -194,20 +205,20 @@ let%expect_test "cut a CSV with no headers" =
       c
       e
       a
-    |}];
+      |}];
     let%bind () = run "csv" [ "cut"; "-no-headers"; "-fields"; "0,2"; "input.csv" ] in
     [%expect {|
       a,c
       c,f
       a,a
-    |}];
+      |}];
     (* fields come out in the order they are specified *)
     let%bind () = run "csv" [ "cut"; "-no-headers"; "-fields"; "2,0"; "input.csv" ] in
     [%expect {|
       c,a
       f,c
       a,a
-    |}];
+      |}];
     (* Attempting to use named fields with -no-headers fails *)
     let%bind () = run "csv" [ "cut"; "-no-headers"; "-fields"; "a"; "input.csv" ] in
     [%expect
@@ -217,7 +228,8 @@ let%expect_test "cut a CSV with no headers" =
       Uncaught exception:
 
         ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
-         (buffer (a c c)) (exn (Failure "Int.of_string: \"a\""))) |}];
+         (buffer (a c c)) (exn (Failure "Int.of_string: \"a\"")))
+      |}];
     (* Attempting to use a first row with duplicate named fields fails *)
     let%bind () = run "csv" [ "cut"; "-fields"; "1"; "input.csv" ] in
     [%expect
@@ -227,7 +239,8 @@ let%expect_test "cut a CSV with no headers" =
       Uncaught exception:
 
         ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
-         (buffer (a c c)) (exn ("Map.of_iteri_exn: duplicate key" c))) |}];
+         (buffer (a c c)) (exn ("Map.of_iteri_exn: duplicate key" c)))
+      |}];
     (* It's not allowed to specify -no-headers -sh *)
     let%bind () =
       run "csv" [ "cut"; "-no-headers"; "-sh"; "-fields"; "1"; "input.csv" ]
@@ -238,7 +251,8 @@ let%expect_test "cut a CSV with no headers" =
       --- STDERR ---
       Uncaught exception:
 
-        (Failure "-suppress-header implies headers, but provided -no-headers too") |}];
+        (Failure "-suppress-header implies headers, but provided -no-headers too")
+      |}];
     (* cut by indices even though a header row exists *)
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-fields"; "0,2"; "input.csv" ] in
@@ -247,7 +261,8 @@ let%expect_test "cut a CSV with no headers" =
       fruit,owner
       apple,Abraham
       apple,Bathsheba
-      orange,Cyrus |}];
+      orange,Cyrus
+      |}];
     (* cut by fields even though no header row exists *)
     let%bind () = run "csv" [ "cut"; "-fields"; "fruit"; "-no-header"; "input.csv" ] in
     [%expect
@@ -258,6 +273,7 @@ let%expect_test "cut a CSV with no headers" =
 
         ("Exception raised in Delimited.Read" (line_number 1) (header_map ())
          (buffer (fruit quantity owner))
-         (exn (Failure "Int.of_string: \"fruit\""))) |}];
+         (exn (Failure "Int.of_string: \"fruit\"")))
+      |}];
     return ())
 ;;

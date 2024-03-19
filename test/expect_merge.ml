@@ -25,13 +25,14 @@ let%expect_test _ =
     let%bind () = run "csv" [ "merge"; "left.csv"; "right.csv" ] in
     [%expect
       {|
-    left-handed,name,right-handed
-    true,Abraham,
-    false,Bathsheba,
-    true,Cyrus,
-    ,Cyrus,false
-    ,Bathsheba,true
-    ,Abraham,false |}];
+      left-handed,name,right-handed
+      true,Abraham,
+      false,Bathsheba,
+      true,Cyrus,
+      ,Cyrus,false
+      ,Bathsheba,true
+      ,Abraham,false
+      |}];
     return ())
 ;;
 
@@ -60,13 +61,14 @@ let%expect_test _ =
     let%bind () = run "csv" [ "merge"; "left.csv"; "right.csv"; "-sep"; "." ] in
     [%expect
       {|
-    left-handed.name.right-handed
-    true.Abraham.
-    false.Bathsheba.
-    true.Cyrus.
-    .Cyrus.false
-    .Bathsheba.true
-    .Abraham.false |}];
+      left-handed.name.right-handed
+      true.Abraham.
+      false.Bathsheba.
+      true.Cyrus.
+      .Cyrus.false
+      .Bathsheba.true
+      .Abraham.false
+      |}];
     return ())
 ;;
 
@@ -82,7 +84,8 @@ let%expect_test "passing - for stdin" =
       --- STDERR ---
       Uncaught exception:
 
-        (Sys_error "-: No such file or directory") |}];
+        (Sys_error "-: No such file or directory")
+      |}];
     return ())
 ;;
 
@@ -115,6 +118,7 @@ let%expect_test "merge csv files that are loaded into memory" =
        (1d3 1c3 1b3 1a3 "")
        (2d1 2c1 2b1 ""  2e1)
        (2d2 2c2 2b2 ""  2e2)
-       (2d3 2c3 2b3 ""  2e3)))) |}];
+       (2d3 2c3 2b3 ""  2e3))))
+    |}];
   return ()
 ;;

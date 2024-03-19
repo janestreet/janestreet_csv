@@ -18,8 +18,7 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "unpop"; "input.csv" ] in
-    [%expect {|
-    fruit,quantity,owner |}];
+    [%expect {| fruit,quantity,owner |}];
     return ())
 ;;
 
@@ -29,8 +28,9 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "unpop"; "input.csv"; "-fields"; "fruit" ] in
     [%expect {|
-    fruit,quantity,owner
-    ,6,Bathsheba |}];
+      fruit,quantity,owner
+      ,6,Bathsheba
+      |}];
     return ())
 ;;
 
@@ -40,9 +40,10 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "unpop"; "input.csv"; "-fields"; "fruit,owner" ] in
     [%expect {|
-    fruit,quantity,owner
-    ,6,Bathsheba
-    orange,2, |}];
+      fruit,quantity,owner
+      ,6,Bathsheba
+      orange,2,
+      |}];
     return ())
 ;;
 
@@ -53,9 +54,10 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "unpop"; "input.csv"; "-v"; "-fields"; "quantity" ] in
     [%expect {|
-    fruit,quantity,owner
-    ,6,Bathsheba
-    orange,2, |}];
+      fruit,quantity,owner
+      ,6,Bathsheba
+      orange,2,
+      |}];
     return ())
 ;;
 
@@ -65,8 +67,9 @@ let%expect_test _ =
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "unpop"; "input.csv"; "-fields"; "fruit,owner"; "-sh" ] in
     [%expect {|
-    ,6,Bathsheba
-    orange,2, |}];
+      ,6,Bathsheba
+      orange,2,
+      |}];
     return ())
 ;;
 
@@ -77,8 +80,9 @@ let%expect_test _ =
       run "csv" [ "unpop"; "input.csv"; "-fields"; "fruit,owner"; "-d"; "." ]
     in
     [%expect {|
-    fruit,quantity,owner
-    ,6,Bathsheba
-    orange,2, |}];
+      fruit,quantity,owner
+      ,6,Bathsheba
+      orange,2,
+      |}];
     return ())
 ;;

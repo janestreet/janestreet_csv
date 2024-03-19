@@ -46,11 +46,12 @@ let%expect_test _ =
     in
     [%expect
       {|
-    fruit,quantity,owner,time
-    apple,4,Abraham,2015-12-31 20:30:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:00:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:30:00.000000-05:00
-    orange,2,Cyrus,2015-12-31 22:00:00.000000-05:00 |}];
+      fruit,quantity,owner,time
+      apple,4,Abraham,2015-12-31 20:30:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:00:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:30:00.000000-05:00
+      orange,2,Cyrus,2015-12-31 22:00:00.000000-05:00
+      |}];
     return ())
 ;;
 
@@ -74,13 +75,14 @@ let%expect_test _ =
     in
     [%expect
       {|
-    fruit,quantity,owner,time
-    apple,4,Abraham,2015-12-31 20:19:00.000000-05:00
-    apple,4,Abraham,2015-12-31 20:38:00.000000-05:00
-    apple,4,Abraham,2015-12-31 20:57:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:16:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:35:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:54:00.000000-05:00 |}];
+      fruit,quantity,owner,time
+      apple,4,Abraham,2015-12-31 20:19:00.000000-05:00
+      apple,4,Abraham,2015-12-31 20:38:00.000000-05:00
+      apple,4,Abraham,2015-12-31 20:57:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:16:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:35:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:54:00.000000-05:00
+      |}];
     return ())
 ;;
 
@@ -104,13 +106,14 @@ let%expect_test _ =
     in
     [%expect
       {|
-    fruit,quantity,owner,time
-    apple,4,Abraham,2015-12-31 20:20:00.000000-05:00
-    apple,4,Abraham,2015-12-31 20:40:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:00:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:20:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:40:00.000000-05:00
-    orange,2,Cyrus,2015-12-31 22:00:00.000000-05:00 |}];
+      fruit,quantity,owner,time
+      apple,4,Abraham,2015-12-31 20:20:00.000000-05:00
+      apple,4,Abraham,2015-12-31 20:40:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:00:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:20:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:40:00.000000-05:00
+      orange,2,Cyrus,2015-12-31 22:00:00.000000-05:00
+      |}];
     return ())
 ;;
 
@@ -136,15 +139,16 @@ let%expect_test _ =
     in
     [%expect
       {|
-    fruit,quantity,owner,time
-    ,,,2015-12-31 19:30:00.000000-05:00
-    apple,4,Abraham,2015-12-31 20:00:00.000000-05:00
-    apple,4,Abraham,2015-12-31 20:30:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:00:00.000000-05:00
-    apple,6,Bathsheba,2015-12-31 21:30:00.000000-05:00
-    orange,2,Cyrus,2015-12-31 22:00:00.000000-05:00
-    orange,2,Cyrus,2015-12-31 22:30:00.000000-05:00
-    orange,2,Cyrus,2015-12-31 23:00:00.000000-05:00 |}];
+      fruit,quantity,owner,time
+      ,,,2015-12-31 19:30:00.000000-05:00
+      apple,4,Abraham,2015-12-31 20:00:00.000000-05:00
+      apple,4,Abraham,2015-12-31 20:30:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:00:00.000000-05:00
+      apple,6,Bathsheba,2015-12-31 21:30:00.000000-05:00
+      orange,2,Cyrus,2015-12-31 22:00:00.000000-05:00
+      orange,2,Cyrus,2015-12-31 22:30:00.000000-05:00
+      orange,2,Cyrus,2015-12-31 23:00:00.000000-05:00
+      |}];
     return ())
 ;;
 
@@ -171,10 +175,11 @@ let%expect_test _ =
     in
     [%expect
       {|
-    fruit.quantity.owner.time
-    apple.4.Abraham."2015-12-31 20:30:00.000000-05:00"
-    apple.6.Bathsheba."2015-12-31 21:00:00.000000-05:00"
-    apple.6.Bathsheba."2015-12-31 21:30:00.000000-05:00"
-    orange.2.Cyrus."2015-12-31 22:00:00.000000-05:00" |}];
+      fruit.quantity.owner.time
+      apple.4.Abraham."2015-12-31 20:30:00.000000-05:00"
+      apple.6.Bathsheba."2015-12-31 21:00:00.000000-05:00"
+      apple.6.Bathsheba."2015-12-31 21:30:00.000000-05:00"
+      orange.2.Cyrus."2015-12-31 22:00:00.000000-05:00"
+      |}];
     return ())
 ;;

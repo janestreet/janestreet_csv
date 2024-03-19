@@ -19,13 +19,14 @@ let%expect_test _ =
     let%bind () = run "csv" [ "to-ascii-table"; "input.csv" ] in
     [%expect
       {|
-    ┌────────┬──────────┬───────────┐
-    │  fruit │ quantity │     owner │
-    ├────────┼──────────┼───────────┤
-    │  apple │        4 │   Abraham │
-    │  apple │        6 │ Bathsheba │
-    │ orange │        2 │     Cyrus │
-    └────────┴──────────┴───────────┘ |}];
+      ┌────────┬──────────┬───────────┐
+      │  fruit │ quantity │     owner │
+      ├────────┼──────────┼───────────┤
+      │  apple │        4 │   Abraham │
+      │  apple │        6 │ Bathsheba │
+      │ orange │        2 │     Cyrus │
+      └────────┴──────────┴───────────┘
+      |}];
     return ())
 ;;
 
@@ -35,15 +36,16 @@ let%expect_test _ =
     let%bind () = run "csv" [ "to-ascii-table"; "-limit-width-to"; "30"; "input.csv" ] in
     [%expect
       {|
-    ┌────────┬────────┬──────────┐
-    │  fruit │ quanti │    owner │
-    │        │     ty │          │
-    ├────────┼────────┼──────────┤
-    │  apple │      4 │  Abraham │
-    │  apple │      6 │ Bathsheb │
-    │        │        │        a │
-    │ orange │      2 │    Cyrus │
-    └────────┴────────┴──────────┘ |}];
+      ┌────────┬────────┬──────────┐
+      │  fruit │ quanti │    owner │
+      │        │     ty │          │
+      ├────────┼────────┼──────────┤
+      │  apple │      4 │  Abraham │
+      │  apple │      6 │ Bathsheb │
+      │        │        │        a │
+      │ orange │      2 │    Cyrus │
+      └────────┴────────┴──────────┘
+      |}];
     return ())
 ;;
 
@@ -53,12 +55,13 @@ let%expect_test _ =
     let%bind () = run "csv" [ "to-ascii-table"; "-sep"; "."; "input.csv" ] in
     [%expect
       {|
-    ┌────────┬──────────┬───────────┐
-    │  fruit │ quantity │     owner │
-    ├────────┼──────────┼───────────┤
-    │  apple │        4 │   Abraham │
-    │  apple │        6 │ Bathsheba │
-    │ orange │        2 │     Cyrus │
-    └────────┴──────────┴───────────┘ |}];
+      ┌────────┬──────────┬───────────┐
+      │  fruit │ quantity │     owner │
+      ├────────┼──────────┼───────────┤
+      │  apple │        4 │   Abraham │
+      │  apple │        6 │ Bathsheba │
+      │ orange │        2 │     Cyrus │
+      └────────┴──────────┴───────────┘
+      |}];
     return ())
 ;;

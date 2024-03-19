@@ -26,10 +26,11 @@ let%expect_test _ =
     let%bind () = run "csv" [ "join"; "-field"; "name"; "numbers.csv"; "fruit.csv" ] in
     [%expect
       {|
-    name,number,fruit,quantity
-    Abraham,1,apple,4
-    Bathsheba,2,apple,6
-    Cyrus,3,orange,2 |}];
+      name,number,fruit,quantity
+      Abraham,1,apple,4
+      Bathsheba,2,apple,6
+      Cyrus,3,orange,2
+      |}];
     return ())
 ;;
 
@@ -62,14 +63,15 @@ let%expect_test _ =
     in
     [%expect
       {|
-    name,number,fruit,quantity
-    Abraham,1,apple,4
-    Abraham,1.2,apple,4
-    Bathsheba,2,apple,6
-    Cyrus,3,orange,2
-    Cyrus,3.5,orange,2
-    Deborah,04,,
-    Elijah,5,, |}];
+      name,number,fruit,quantity
+      Abraham,1,apple,4
+      Abraham,1.2,apple,4
+      Bathsheba,2,apple,6
+      Cyrus,3,orange,2
+      Cyrus,3.5,orange,2
+      Deborah,04,,
+      Elijah,5,,
+      |}];
     return ())
 ;;
 
@@ -103,11 +105,12 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      (Failure "No quantity column in numbers.csv") |}];
+        (Failure "No quantity column in numbers.csv")
+      |}];
     return ())
 ;;
 
@@ -145,12 +148,13 @@ let%expect_test _ =
     in
     [%expect
       {|
-    name,number,fruit,quantity
-    Abraham,1,apple,4
-    Bathsheba,2,apple,6
-    Cyrus,3,orange,2
-    Deborah,04,,
-    Elijah,5,, |}];
+      name,number,fruit,quantity
+      Abraham,1,apple,4
+      Bathsheba,2,apple,6
+      Cyrus,3,orange,2
+      Deborah,04,,
+      Elijah,5,,
+      |}];
     return ())
 ;;
 
@@ -180,12 +184,13 @@ let%expect_test _ =
     in
     [%expect
       {|
-    name,number,fruit,quantity
-    ,5,,
-    Abraham,1,apple,4
-    Bathsheba,2,apple,6
-    Cyrus,3,orange,2
-    Deborah,04,, |}];
+      name,number,fruit,quantity
+      ,5,,
+      Abraham,1,apple,4
+      Bathsheba,2,apple,6
+      Cyrus,3,orange,2
+      Deborah,04,,
+      |}];
     return ())
 ;;
 
@@ -220,13 +225,14 @@ let%expect_test _ =
     in
     [%expect
       {|
-    name,number,fruit,quantity
-    ,5,,
-    ,6,,
-    Abraham,1,apple,4
-    Bathsheba,2,apple,6
-    Cyrus,3,orange,2
-    Deborah,04,, |}];
+      name,number,fruit,quantity
+      ,5,,
+      ,6,,
+      Abraham,1,apple,4
+      Bathsheba,2,apple,6
+      Cyrus,3,orange,2
+      Deborah,04,,
+      |}];
     return ())
 ;;
 
@@ -250,12 +256,13 @@ let%expect_test _ =
     in
     [%expect
       {|
-    ("Unclean exit" (Exit_non_zero 1))
-    --- STDERR ---
-    Uncaught exception:
+      ("Unclean exit" (Exit_non_zero 1))
+      --- STDERR ---
+      Uncaught exception:
 
-      ("Only key fields may appear in multiple files." (duplicate fruit)
-       (combined_header (quantity fruit name fruit name))) |}];
+        ("Only key fields may appear in multiple files." (duplicate fruit)
+         (combined_header (quantity fruit name fruit name)))
+      |}];
     return ())
 ;;
 
@@ -288,10 +295,11 @@ let%expect_test _ =
     in
     [%expect
       {|
-    name,number,fruit,quantity
-    Abraham,1,apple,4
-    Bathsheba,2,apple,6
-    Cyrus,3,orange,2 |}];
+      name,number,fruit,quantity
+      Abraham,1,apple,4
+      Bathsheba,2,apple,6
+      Cyrus,3,orange,2
+      |}];
     return ())
 ;;
 
@@ -323,8 +331,9 @@ let%expect_test _ =
     in
     [%expect
       {|
-    name,fruit,number,quantity
-    Abraham,apple,1,4
-    Bathsheba,apple,2,6 |}];
+      name,fruit,number,quantity
+      Abraham,apple,1,4
+      Bathsheba,apple,2,6
+      |}];
     return ())
 ;;

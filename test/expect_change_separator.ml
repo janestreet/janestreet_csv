@@ -28,11 +28,12 @@ let%expect_test _ =
         ]
     in
     [%expect
-      "\n\
-      \    fruit|quantity|owner\r\n\
-      \    apple|4|Lincoln, Abraham\r\n\
-      \    apple|6|Bathsheba\r\n\
-      \    orange|2|\"Cyrus|Foo\"\r"];
+      " \n\
+      \ fruit|quantity|owner\n\
+      \ apple|4|Lincoln, Abraham\n\
+      \ apple|6|Bathsheba\n\
+      \ orange|2|\"Cyrus|Foo\"\n\
+      \ "];
     return ())
 ;;
 
@@ -51,11 +52,12 @@ let%expect_test _ =
         ]
     in
     [%expect
-      "\n\
-      \    fruit,quantity,owner\r\n\
-      \    apple,4,\"Lincoln, Abraham\"\r\n\
-      \    apple,6,Bathsheba\r\n\
-      \    orange,2,Cyrus|Foo\r"];
+      " \n\
+      \ fruit,quantity,owner\n\
+      \ apple,4,\"Lincoln, Abraham\"\n\
+      \ apple,6,Bathsheba\n\
+      \ orange,2,Cyrus|Foo\n\
+      \ "];
     return ())
 ;;
 
@@ -78,6 +80,7 @@ let%expect_test "tab separated" =
       fruit,quantity,owner
       apple,4,"Lincoln, Abraham"
       apple,6,Bathsheba
-      orange,2,Cyrus|Foo |}];
+      orange,2,Cyrus|Foo
+      |}];
     return ())
 ;;

@@ -34,7 +34,7 @@ let main =
       Delimited.Write.Expert.By_row.of_writer_and_close ~sep:out_sep (force Writer.stdout)
     in
     let%map () =
-      Pipe.iter r ~f:(fun row -> Pipe.write w (Delimited.Read.Row.to_list row))
+      Pipe.iter r ~f:(fun row -> Pipe.write_if_open w (Delimited.Read.Row.to_list row))
     in
     Pipe.close_read r;
     Pipe.close w
