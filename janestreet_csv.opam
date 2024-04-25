@@ -22,7 +22,7 @@ depends: [
   "ppx_jane"
   "re2"
   "textutils"
-  "dune"              {>= "2.0.0"}
+  "dune"              {>= "3.11.0"}
   "pcre"
   "tyxml"             {>= "4.3.0"}
 ]
