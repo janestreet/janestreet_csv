@@ -33,7 +33,9 @@ let%expect_test "ragged" =
   do_test (fun () ->
     let%bind () =
       Writer.with_file "input.csv" ~f:(fun writer ->
-        Writer.write writer {|"foo","bar","baz"
+        Writer.write
+          writer
+          {|"foo","bar","baz"
 "1","2"
 "x"
 "","foo""bar",xyz,pqr

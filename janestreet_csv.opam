@@ -13,6 +13,8 @@ depends: [
   "ocaml" {>= "5.1.0"}
   "async"
   "bignum"
+  "core"
+  "core_extended"
   "core_kernel"
   "core_unix"
   "csvfields"

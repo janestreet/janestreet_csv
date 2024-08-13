@@ -187,14 +187,16 @@ let%expect_test "bytes, spans" =
   in
   let sort field field_type = sort_test ~field ~field_type ~data [] in
   let%bind () = sort "latency" "span" in
-  [%expect {|
+  [%expect
+    {|
     latency,size
     1ns,1K
     3us,1.2G
     2h,17b
     |}];
   let%bind () = sort "size" "bytes" in
-  [%expect {|
+  [%expect
+    {|
     latency,size
     2h,17b
     1ns,1K
@@ -278,10 +280,10 @@ let multi_column_sort_test ~extra_args =
   List.cartesian_product headers headers
   |> List.filter ~f:(fun (x, y) -> String.(x <> y))
   |> Deferred.List.iter ~how:`Sequential ~f:(fun fields ->
-       let comma_separated_fields = [%string "%{fst fields},%{snd fields}"] in
-       print_newline ();
-       print_endline [%string "sorted by %{comma_separated_fields}\n================="];
-       sort_test ~data ~field:comma_separated_fields (extra_args ~fields))
+    let comma_separated_fields = [%string "%{fst fields},%{snd fields}"] in
+    print_newline ();
+    print_endline [%string "sorted by %{comma_separated_fields}\n================="];
+    sort_test ~data ~field:comma_separated_fields (extra_args ~fields))
 ;;
 
 let%expect_test "multi-column" =

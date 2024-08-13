@@ -16,7 +16,8 @@ let%expect_test "simple" =
         Writer.flushed writer)
     in
     let%bind () = run "csv" [ "id"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       foo,bar,baz
       1,2,3
       x,y,z
@@ -29,7 +30,9 @@ let%expect_test "ragged" =
   do_test (fun () ->
     let%bind () =
       Writer.with_file "input.csv" ~f:(fun writer ->
-        Writer.write writer {|"foo","bar","baz"
+        Writer.write
+          writer
+          {|"foo","bar","baz"
 "1","2"
 "x"
 "","foo""bar",xyz,pqr
@@ -37,7 +40,8 @@ let%expect_test "ragged" =
         Writer.flushed writer)
     in
     let%bind () = run "csv" [ "id"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       foo,bar,baz
       1,2
       x

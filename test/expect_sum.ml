@@ -19,7 +19,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "sum"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       int,float,string
       1.,1.1,0.
       |}];
@@ -31,7 +32,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv ~sep:'/' "input.csv" in
     let%bind () = run "csv" [ "sum"; "input.csv"; "-sep"; "/" ] in
-    [%expect {|
+    [%expect
+      {|
       int/float/string
       1./1.1/0.
       |}];

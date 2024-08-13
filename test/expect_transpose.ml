@@ -71,7 +71,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = Import.make_input_csv "input.csv" [ [ "foo"; "bar"; "baz" ] ] in
     let%bind () = run "csv" [ "transpose"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       foo
       bar
       baz

@@ -41,10 +41,10 @@ let run
       let td_attrs = convert_attrs td_attrs in
       (if no_header && not suppress_header then csv.header :: csv.lines else csv.lines)
       |> List.map ~f:(fun line ->
-           Tyxml.Html.tr
-             ~a:tr_attrs
-             (List.map line ~f:(fun value ->
-                Tyxml.Html.(td ~a:td_attrs [ field_to_html value ]))))
+        Tyxml.Html.tr
+          ~a:tr_attrs
+          (List.map line ~f:(fun value ->
+             Tyxml.Html.(td ~a:td_attrs [ field_to_html value ]))))
     in
     let document = Tyxml.Html.table ~a:table_attrs (Option.to_list header @ rows) in
     Format.printf "%a" (Tyxml.Html.pp_elt ()) document)

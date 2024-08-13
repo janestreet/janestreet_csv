@@ -49,6 +49,6 @@ module type Csv_param = sig
 
   include
     Applicative.Let_syntax
-      with type 'a t := 'a Command.Param.t
-      with module Open_on_rhs_intf := Open_on_rhs_intf
+    with type 'a t := 'a Command.Param.t
+    with module Open_on_rhs_intf := Open_on_rhs_intf
 end

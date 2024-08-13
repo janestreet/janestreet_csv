@@ -3,13 +3,16 @@ open! Async
 open! Import
 
 let%expect_test "good input" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (F2 Y2) (F3 Z2))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp" ] in
-    [%expect {|
+    [%expect
+      {|
       F1,F2,F3
       X1,Y1,Z1
       X2,Y2,Z2
@@ -18,13 +21,16 @@ let%expect_test "good input" =
 ;;
 
 let%expect_test "sep" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (F2 Y2) (F3 Z2))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp"; "-sep"; "|" ] in
-    [%expect {|
+    [%expect
+      {|
       F1|F2|F3
       X1|Y1|Z1
       X2|Y2|Z2
@@ -33,13 +39,16 @@ let%expect_test "sep" =
 ;;
 
 let%expect_test "no header" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (F2 Y2) (F3 Z2))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp"; "-nh" ] in
-    [%expect {|
+    [%expect
+      {|
       X1,Y1,Z1
       X2,Y2,Z2
       |}];
@@ -47,10 +56,12 @@ let%expect_test "no header" =
 ;;
 
 let%expect_test "fields not in header" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (G2 Y2) (F3 Z2))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp" ] in
     [%expect
@@ -66,10 +77,12 @@ let%expect_test "fields not in header" =
 ;;
 
 let%expect_test "detect fields not in header even if not printing header" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (G2 Y2) (F3 Z2))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp"; "-nh" ] in
     [%expect
@@ -84,13 +97,16 @@ let%expect_test "detect fields not in header even if not printing header" =
 ;;
 
 let%expect_test "fields reordered" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (F3 Y2) (F2 Z2))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp" ] in
-    [%expect {|
+    [%expect
+      {|
       F1,F2,F3
       X1,Y1,Z1
       X2,Z2,Y2
@@ -99,10 +115,12 @@ let%expect_test "fields reordered" =
 ;;
 
 let%expect_test "field omitted" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (F2 Y2))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp" ] in
     [%expect
@@ -126,10 +144,12 @@ let%expect_test "empty input" =
 ;;
 
 let%expect_test "duplicate fields" =
-  let input = {|
+  let input =
+    {|
 ((F1 X1) (F2 Y1) (F3 Z1))
 ((F1 X2) (F2 Y2) (F2 Y3))
-|} in
+|}
+  in
   do_test (fun () ->
     let%bind () = run ~stdin:input "csv" [ "of-sexp" ] in
     [%expect

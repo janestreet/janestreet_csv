@@ -22,7 +22,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-fields"; "fruit"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       fruit
       apple
       apple
@@ -36,7 +37,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-fields"; "fruit,quantity"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       fruit,quantity
       apple,4
       apple,6
@@ -50,7 +52,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-v"; "-fields"; "fruit,quantity"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       owner
       Abraham
       Bathsheba
@@ -64,7 +67,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-v"; "-fields"; "owner"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       fruit,quantity
       apple,4
       apple,6
@@ -78,7 +82,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
     let%bind () = run "csv" [ "cut"; "-sh"; "-fields"; "fruit"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       apple
       apple
       orange
@@ -134,7 +139,8 @@ let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv ~sep:'.' "input.csv" in
     let%bind () = run "csv" [ "cut"; "-d"; "."; "-fields"; "fruit"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       fruit
       apple
       apple
@@ -149,7 +155,8 @@ let%expect_test _ =
     let%bind () =
       run "csv" [ "cut"; "-d"; "."; "-fields"; "fruit,quantity"; "input.csv" ]
     in
-    [%expect {|
+    [%expect
+      {|
       fruit,quantity
       apple,4
       apple,6
@@ -164,7 +171,8 @@ let%expect_test "incorrect duplication of header" =
     let%bind () = make_input_csv "1.csv" in
     let%bind () = make_input_csv "2.csv" in
     let%bind () = run "csv" [ "cut"; "-fields"; "quantity"; "1.csv"; "2.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       quantity
       4
       6
@@ -201,20 +209,23 @@ let%expect_test "cut a CSV with no headers" =
   do_test (fun () ->
     let%bind () = Import.make_input_csv "input.csv" lines in
     let%bind () = run "csv" [ "cut"; "-no-headers"; "-fields"; "1"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       c
       e
       a
       |}];
     let%bind () = run "csv" [ "cut"; "-no-headers"; "-fields"; "0,2"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       a,c
       c,f
       a,a
       |}];
     (* fields come out in the order they are specified *)
     let%bind () = run "csv" [ "cut"; "-no-headers"; "-fields"; "2,0"; "input.csv" ] in
-    [%expect {|
+    [%expect
+      {|
       c,a
       f,c
       a,a

@@ -28,14 +28,13 @@ let int_specifier_of_string spec =
     in
     List.map segments ~f:convert_segment
     |> List.fold ~init:String.Set.empty ~f:(fun accum col_list ->
-         List.fold col_list ~init:accum ~f:(fun accum col ->
-           let col = string_of_int col in
-           if Set.mem accum col
-           then
-             raise
-               (Invalid_specifier
-                  ("Invalid column specifier: column " ^ col ^ " duplicated."))
-           else Set.add accum col)))
+      List.fold col_list ~init:accum ~f:(fun accum col ->
+        let col = string_of_int col in
+        if Set.mem accum col
+        then
+          raise
+            (Invalid_specifier ("Invalid column specifier: column " ^ col ^ " duplicated."))
+        else Set.add accum col)))
 ;;
 
 (* A specifier string looks like f1,f3,f5,f7. *)
