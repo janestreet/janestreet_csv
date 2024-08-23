@@ -8,7 +8,7 @@ module Merge = struct
     Command.basic
       ~summary:"merge multiple CSV files into one"
       (let%map_open.Csv_param separator = sep
-       and files = files in
+       and files in
        fun () ->
          if List.length files < 2
          then failwith "must specify at least two files to merge"
@@ -49,11 +49,11 @@ module Grep = struct
          separator
          =
          sep
-       and skip_lines = skip_lines
+       and skip_lines
        and grep_fields = Lib.Grep.Target_fields.param
        and file = file_stdin_anon
-       and regexp = regexp
-       and invert = invert
+       and regexp
+       and invert
        and always_print_header =
          flag "-always-print-header" no_arg ~doc:" print headers even if no rows match"
        in
@@ -90,7 +90,7 @@ module To_ascii_table = struct
       (let%map_open.Csv_param separator = sep
        and file = file_stdin_anon
        and limit_width_to = max_width
-       and prefer_split_on_spaces = prefer_split_on_spaces in
+       and prefer_split_on_spaces in
        fun () ->
          Lib.To_ascii_table.run ~separator ?limit_width_to file ~prefer_split_on_spaces)
   ;;
@@ -102,13 +102,13 @@ module To_html_table = struct
       ~summary:"print a csv as an HTML table"
       (let%map_open.Csv_param separator = sep
        and file = file_stdin_anon
-       and no_header = no_header
-       and suppress_header = suppress_header
-       and table_attrs = table_attrs
-       and th_attrs = th_attrs
-       and tr_attrs = tr_attrs
-       and td_attrs = td_attrs
-       and border = border
+       and no_header
+       and suppress_header
+       and table_attrs
+       and th_attrs
+       and tr_attrs
+       and td_attrs
+       and border
        and unescaped_html =
          flag
            "-unescaped-html"
@@ -151,7 +151,7 @@ module Id = struct
   let command =
     Command.async
       ~summary:"transfer input to output, canonicalising quoting"
-      (let%map_open.Csv_param sep = sep
+      (let%map_open.Csv_param sep
        and file = file_stdin_anon in
        fun () ->
          let%bind reader =
@@ -168,7 +168,7 @@ module Validate = struct
   let command =
     Command.async
       ~summary:"raise if the csv has ragged rows"
-      (let%map_open.Csv_param sep = sep
+      (let%map_open.Csv_param sep
        and file = file_stdin_anon in
        fun () ->
          let%bind reader =
@@ -189,7 +189,7 @@ module Header = struct
   let command =
     Command.async
       ~summary:"Add the given column headers to a csv"
-      (let%map_open.Csv_param sep = sep
+      (let%map_open.Csv_param sep
        and file = file_stdin_flag
        and add_header = anon (non_empty_sequence_as_list ("COLUMN-HEADER" %: string)) in
        fun () ->

@@ -159,7 +159,7 @@ let command =
   Command.async
     ~summary
     ~readme
-    (let%map_open.Csv_param sep = sep
+    (let%map_open.Csv_param sep
      and keys = flag "-key" (listed string) ~doc:" group by these fields"
      and aggregations = aggregation_flags
      and csv, csvs =

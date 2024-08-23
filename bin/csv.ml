@@ -21,8 +21,8 @@ let pretty_command ?alias_for () =
   Command.basic
     ~summary
     (let%map_open separator = sep
-     and suppress_header = suppress_header
-     and space = space
+     and suppress_header
+     and space
      and file = anon (maybe ("FILE" %: Filename_unix.arg_type)) in
      fun () ->
        let chan =
@@ -45,9 +45,9 @@ let cut_command ~deprecated =
   let summary = "cut for csv files" ^ if deprecated then " (deprecated)" else "" in
   Command.basic
     ~summary
-    (let%map_open sep = sep
+    (let%map_open sep
      and headers_wanted = headers_wanted fields
-     and suppress_header = suppress_header
+     and suppress_header
      and no_header =
        flag
          "-no-headers"
@@ -81,7 +81,7 @@ let join_command =
   let summary = "join for csv files" in
   Command.basic
     ~summary
-    (let%map_open sep = sep
+    (let%map_open sep
      and key_fields =
        flag "-field" (listed string) ~doc:"FIELD field(s) on which to join"
        |> map ~f:(function
@@ -98,7 +98,7 @@ let diff_command =
   let summary = "diff for csv files" in
   Command.basic
     ~summary
-    (let%map_open no_header = no_header
+    (let%map_open no_header
      and key_spec = key_specifier
      and file1 = anon ("FILE1" %: Filename_unix.arg_type)
      and file2 = anon ("FILE2" %: Filename_unix.arg_type) in
@@ -112,7 +112,7 @@ let diff_command =
 let pop_or_unpop_command ~summary pop_type =
   Command.basic
     ~summary
-    (let%map_open sep = sep
+    (let%map_open sep
      and skip_header = suppress_header
      and headers_wanted = headers_wanted pop_fields
      and files = anon (maybe ("FILE" %: Filename_unix.arg_type)) in
@@ -151,7 +151,7 @@ let fields_command =
   let summary = "list csv field names" in
   Command.basic
     ~summary
-    (let%map_open sep = sep
+    (let%map_open sep
      and files = anon (sequence ("FILE" %: Filename_unix.arg_type)) in
      fun () ->
        let handle_file file = List.iter ~f:print_endline (Cut.field_names file ~sep) in
