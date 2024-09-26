@@ -47,3 +47,7 @@ end
 module Header : sig
   val command : Command.t
 end
+
+module Count_rows : sig
+  val command : Command.t
+end

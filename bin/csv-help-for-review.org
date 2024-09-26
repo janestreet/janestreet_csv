@@ -7,6 +7,8 @@
 : === subcommands ===
 : 
 :   change-separator           . Changes the delimiter, respecting quoting
+:   count-rows                 . print the number of rows of data (excluding
+:                                header) in a csv
 :   cut                        . cut for csv files
 :   cut2                       . cut for csv files (deprecated)
 :   diff                       . diff for csv files
@@ -63,6 +65,18 @@
 : 
 :   -output-separator CHAR     . separator desired in output
 :   [-input-separator CHAR]    . separator expected in input
+:   [-help], -?                . print this help text and exit
+
+** count-rows
+
+: print the number of rows of data (excluding header) in a csv
+: 
+:   csv.exe count-rows [FILENAME]
+: 
+: === flags ===
+: 
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
 :   [-help], -?                . print this help text and exit
 
 ** cut
