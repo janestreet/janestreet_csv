@@ -12,6 +12,7 @@ build: [
 depends: [
   "ocaml" {>= "5.1.0"}
   "async"
+  "base"
   "bignum"
   "core"
   "core_extended"

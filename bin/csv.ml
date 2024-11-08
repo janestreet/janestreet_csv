@@ -213,6 +213,7 @@ let command =
     ; "id", Csv_new.Id.command
     ; "validate", Csv_new.Validate.command
     ; "enhead", Csv_new.Header.command
+    ; "count-rows", Csv_new.Count_rows.command
     ]
 ;;
 

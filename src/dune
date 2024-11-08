@@ -1,7 +1,7 @@
 (library
  (name csv_tool_lib)
  (public_name janestreet_csv.csv_tool_lib)
- (libraries textutils.ascii_table async bignum core_kernel.composition_infix
+ (libraries textutils.ascii_table async bignum base.composition_infix
    csvfields.csvlib delimited_parsing core_kernel.enum fieldslib
    core_unix.filename_unix tyxml core core_extended.delimited_kernel
    numeric_string pcre re2 core_unix.time_float_unix)

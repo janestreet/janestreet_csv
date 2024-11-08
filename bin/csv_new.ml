@@ -202,3 +202,13 @@ module Header = struct
          Lib.Id.run ~sep ~add_header reader (force Writer.stdout))
   ;;
 end
+
+module Count_rows = struct
+  let command =
+    Command.basic
+      ~summary:"print the number of rows of data (excluding header) in a csv"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon in
+       fun () -> Lib.Csv_count_rows.run ~separator file)
+  ;;
+end
