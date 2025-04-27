@@ -214,6 +214,7 @@ let command =
     ; "validate", Csv_new.Validate.command
     ; "enhead", Csv_new.Header.command
     ; "count-rows", Csv_new.Count_rows.command
+    ; "destructure", Csv_tool_lib.Convert.command ()
     ]
 ;;
 

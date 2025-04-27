@@ -32,8 +32,14 @@ module Transpose = struct
     Command.basic
       ~summary:"transpose csv rows to columns for easier command-line viewing"
       (let%map_open.Csv_param separator = sep
+       and one_row_at_a_time =
+         flag
+           "-one-row-at-a-time"
+           no_arg
+           ~doc:
+             " transpose one row at a time.  Output will have ROWS*COLS number of rows."
        and file = file_stdin_anon in
-       fun () -> Lib.Csv_transpose.run ~separator file)
+       fun () -> Lib.Csv_transpose.run ~separator ~one_row_at_a_time file)
   ;;
 end
 

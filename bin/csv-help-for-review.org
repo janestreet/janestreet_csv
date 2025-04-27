@@ -11,6 +11,8 @@
 :                                header) in a csv
 :   cut                        . cut for csv files
 :   cut2                       . cut for csv files (deprecated)
+:   destructure                . Convert from structured string formats of OCaml
+:                                types to simpler formats
 :   diff                       . diff for csv files
 :   enhead                     . Add the given column headers to a csv
 :   fields                     . list csv field names
@@ -113,6 +115,100 @@
 :   [-sh], -suppress-header, --suppress-header
 :                              . keep the header row from appearing in the output
 :   [-v], --invert-match       . exclude specified fields rather than extract them
+:   [-help], -?                . print this help text and exit
+
+** destructure
+
+: Convert from structured string formats of OCaml types to simpler formats
+: 
+:   csv.exe destructure SUBCOMMAND
+: 
+: === subcommands ===
+: 
+:   percent                    . Convert percentage values like 3x or 25bp into
+:                                multipliers like 3 or 0.0025.
+:   span                       . Convert Time_ns.Span.t into a number
+:   time                       . Convert Time_ns.t, including the
+:                                list-of-two-atoms sexp format, into a simpler
+:                                format
+:   unit                       . Replace () with the empty string
+:   help                       . explain a given subcommand (perhaps recursively)
+
+*** percent
+
+: Convert percentage values like 3x or 25bp into multipliers like 3 or 0.0025.
+: 
+:   csv.exe destructure percent [FILENAME]
+: 
+: === flags ===
+: 
+:   [-fields field,...], --fields
+:                              . Fields to convert (default: all of them)
+:   [-on-error ACTION]         . What to do if a named field doesn’t have the
+:                                expected type (default: skip) (can be: fail,
+:                                only-fail-if-nonempty, skip)
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
+:   [-help], -?                . print this help text and exit
+
+*** span
+
+: Convert Time_ns.Span.t into a number
+: 
+:   csv.exe destructure span [FILENAME]
+: 
+: === flags ===
+: 
+:   [-fields field,...], --fields
+:                              . Fields to convert (default: all of them)
+:   [-on-error ACTION]         . What to do if a named field doesn’t have the
+:                                expected type (default: skip) (can be: fail,
+:                                only-fail-if-nonempty, skip)
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
+:   [-unit _]                  . The units to convert the span into (default:
+:                                second) (can be: day, hour, minute, ms, ns,
+:                                second, us)
+:   [-help], -?                . print this help text and exit
+
+*** time
+
+: Convert Time_ns.t, including the list-of-two-atoms sexp format, into a simpler format
+: 
+:   csv.exe destructure time [FILENAME]
+: 
+: === flags ===
+: 
+:   [-fields field,...], --fields
+:                              . Fields to convert (default: all of them)
+:   [-on-error ACTION]         . What to do if a named field doesn’t have the
+:                                expected type (default: skip) (can be: fail,
+:                                only-fail-if-nonempty, skip)
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
+:   [-to-iso8601-utc]          . Show "epoch + 1ns" as
+:                                "1970-01-01T00:00:00.000000001Z" (default)
+:   [-to-unix-fractional-seconds]
+:                              . Show "epoch + 1ns" as "0.000000001"
+:   [-to-unix-ns], -to-unix-nanos
+:                              . Show "epoch + 1ns" as "1"
+:   [-to-unix-seconds]         . Show "epoch + 1ns" as "0"
+:   [-to-utc]                  . Show "epoch + 1ns" as "1970-01-01
+:                                00:00:00.000000001Z"
+:   [-help], -?                . print this help text and exit
+
+*** unit
+
+: Replace () with the empty string
+: 
+:   csv.exe destructure unit [FILENAME]
+: 
+: === flags ===
+: 
+:   [-fields field,...], --fields
+:                              . Fields to convert (default: all of them)
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
 :   [-help], -?                . print this help text and exit
 
 ** diff
@@ -441,6 +537,8 @@
 : 
 : === flags ===
 : 
+:   [-one-row-at-a-time]       . transpose one row at a time. Output will have
+:                                ROWS*COLS number of rows.
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')
 :   [-help], -?                . print this help text and exit

@@ -50,6 +50,27 @@ let%expect_test _ =
     return ())
 ;;
 
+let%expect_test _ =
+  do_test (fun () ->
+    let%bind () = make_input_csv ~sep:'.' "input.csv" in
+    let%bind () =
+      run "csv" [ "transpose"; "-sep"; "."; "-one-row-at-a-time"; "input.csv" ]
+    in
+    [%expect
+      {|
+      fruit.apple
+      quantity.4
+      owner.Abraham
+      fruit.apple
+      quantity.6
+      owner.Bathsheba
+      fruit.orange
+      quantity.2
+      owner.Cyrus
+      |}];
+    return ())
+;;
+
 (* Rows have different lengths. *)
 let%expect_test _ =
   do_test (fun () ->
