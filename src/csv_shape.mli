@@ -6,8 +6,8 @@ type t =
   | Rectangular
 [@@deriving sexp]
 
-(** If [create_verbose] returns [Ragged lengths], [lengths] will be an exhaustive
-    listing of every length and every line of each length. *)
+(** If [create_verbose] returns [Ragged lengths], [lengths] will be an exhaustive listing
+    of every length and every line of each length. *)
 val create_verbose : string list list -> t
 
 (** If [create_streaming] returns [Ragged lengths], [lengths] will be None *)

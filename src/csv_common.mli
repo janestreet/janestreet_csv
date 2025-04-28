@@ -20,10 +20,10 @@ module Or_file : sig
     | Stdin
   [@@deriving compare, sexp_of]
 
-  (** Anonymous arg  *)
+  (** Anonymous arg *)
   val anon : t Command.Param.t
 
-  (** [-file] flag  *)
+  (** [-file] flag *)
   val flag : t Command.Param.t
 
   (** [with_lines] calls header_f on the first line, and passes the return value as the
@@ -38,5 +38,5 @@ module Or_file : sig
   val with_all : ?separator:char -> t -> f:(csv -> unit) -> unit
 end
 
-(** [of_csvlib_csv rows] assumes the first row is a header.  It raises if [rows = []]. *)
+(** [of_csvlib_csv rows] assumes the first row is a header. It raises if [rows = []]. *)
 val of_csvlib_csv : string list list -> t
