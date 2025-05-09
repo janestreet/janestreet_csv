@@ -27,9 +27,13 @@ module Sort_column : sig
     ; sort_type : Sort_type.t
     }
   [@@deriving sexp_of]
+end
 
-  val param : t list Command.Param.t
+module Sort_columns : sig
+  type t
+
+  val param : t Command.Param.t
 end
 
 val sort_on_fields : Sort_column.t list -> Csv_common.t -> Csv_common.t
-val run : ?separator:char -> Sort_column.t list -> Csv_common.Or_file.t -> unit
+val run : ?separator:char -> Sort_columns.t -> Csv_common.Or_file.t -> unit
