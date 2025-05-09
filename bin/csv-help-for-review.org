@@ -399,7 +399,8 @@
 : === flags ===
 : 
 :   [-field _], -f, --field    . named fields to sort on, comma separated
-:                                (outermost sort first)
+:                                (outermost sort first; sorted on all fields if
+:                                omitted)
 :   [-field-types _], --field-types
 :                              . field type for sorting (default: infer) (can be
 :                                comma-separated values: bytes, float, infer, int,

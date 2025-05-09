@@ -111,8 +111,14 @@ module Sort_column = struct
     ; sort_type : Sort_type.t
     }
   [@@deriving sexp_of]
+end
 
-  let param : t list Command.Param.t =
+module Sort_columns = struct
+  type t =
+    | Explicit_fields of Sort_column.t list
+    | All_fields of Order.t
+
+  let param : t Command.Param.t =
     let%map_open.Command () = return ()
     and fields = Csv_param.fields_backward_compat
     and sort_types = Sort_type.param
@@ -155,8 +161,21 @@ module Sort_column = struct
         [%string
           "Unequal number of fields (%{num_fields#Int}) and sort_types \
            (%{num_sort_types#Int})"];
-    List.zip_exn (List.zip_exn fields sort_types) orders
-    |> List.map ~f:(fun ((field, sort_type), order) -> { field; order; sort_type })
+    if List.is_empty fields
+    then All_fields (if reverse then Order.Descending else Order.Ascending)
+    else (
+      let explicit_fields =
+        List.zip_exn (List.zip_exn fields sort_types) orders
+        |> List.map ~f:(fun ((field, sort_type), order) ->
+          { Sort_column.field; order; sort_type })
+      in
+      Explicit_fields explicit_fields)
+  ;;
+
+  let to_sort_column_list ~header = function
+    | Explicit_fields ts -> ts
+    | All_fields order ->
+      List.map header ~f:(fun field -> { Sort_column.field; order; sort_type = Infer })
   ;;
 end
 
@@ -184,5 +203,6 @@ let sort_on_fields ts csv = List.fold_right ts ~init:csv ~f:sort_on_field
 
 let run ?separator ts file =
   Or_file.with_all file ?separator ~f:(fun csv ->
+    let ts = Sort_columns.to_sort_column_list ~header:csv.header ts in
     csv |> sort_on_fields ts |> print_csv ?separator)
 ;;

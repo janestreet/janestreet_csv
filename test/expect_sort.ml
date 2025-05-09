@@ -16,15 +16,20 @@ let make_input_csv ?sep ?(data = default_data) filename =
   make_input_csv ?sep filename data
 ;;
 
-let sort_test ?sep ?data ~field ?field_type flags =
-  let ft =
+let sort_test ?sep ?data ?field ?field_type flags =
+  let flags =
     match field_type with
-    | None -> []
-    | Some t -> [ "-field-type"; t ]
+    | None -> flags
+    | Some t -> "-field-type" :: t :: flags
+  in
+  let flags =
+    match field with
+    | None -> flags
+    | Some t -> "-field" :: t :: flags
   in
   do_test (fun () ->
     let%bind () = make_input_csv ?sep ?data "input.csv" in
-    run "csv" ([ "sort"; "-field"; field ] @ ft @ [ "input.csv" ] @ flags))
+    run "csv" ("sort" :: "input.csv" :: flags))
 ;;
 
 (* Sort on a field as a string. *)
@@ -254,29 +259,33 @@ let%expect_test "inference" =
   return ()
 ;;
 
+let multi_column_headers = [ "string"; "int"; "bytes"; "float" ]
+
+let multi_column_data =
+  [ multi_column_headers
+    (* 1g vs 3k in bytes column chosen to detect if we're just ignoring the suffix. *)
+  ; [ "b"; "2"; "1g"; "0.17e4" ]
+  ; [ "b"; "1"; "1g"; "0.17e4" ]
+  ; [ "b"; "1"; "1g"; "   2.5" ]
+  ; [ "a"; "1"; "1g"; "   2.5" ]
+  ; [ "a"; "2"; "3k"; "0.17e4" ]
+  ; [ "a"; "1"; "3k"; "0.17e4" ]
+  ; [ "b"; "1"; "3k"; "   2.5" ]
+  ; [ "a"; "1"; "1g"; "0.17e4" ]
+  ; [ "a"; "1"; "3k"; "   2.5" ]
+  ; [ "b"; "2"; "3k"; "0.17e4" ]
+  ; [ "b"; "1"; "3k"; "0.17e4" ]
+  ; [ "a"; "2"; "1g"; "0.17e4" ]
+  ; [ "a"; "2"; "1g"; "   2.5" ]
+  ; [ "b"; "2"; "1g"; "   2.5" ]
+  ; [ "a"; "2"; "3k"; "   2.5" ]
+  ; [ "b"; "2"; "3k"; "   2.5" ]
+  ]
+;;
+
 let multi_column_sort_test ~extra_args =
-  let headers = [ "string"; "int"; "bytes"; "float" ] in
-  let data =
-    [ headers
-      (* 1g vs 3k in bytes column chosen to detect if we're just ignoring the suffix. *)
-    ; [ "b"; "2"; "1g"; "0.17e4" ]
-    ; [ "b"; "1"; "1g"; "0.17e4" ]
-    ; [ "b"; "1"; "1g"; "   2.5" ]
-    ; [ "a"; "1"; "1g"; "   2.5" ]
-    ; [ "a"; "2"; "3k"; "0.17e4" ]
-    ; [ "a"; "1"; "3k"; "0.17e4" ]
-    ; [ "b"; "1"; "3k"; "   2.5" ]
-    ; [ "a"; "1"; "1g"; "0.17e4" ]
-    ; [ "a"; "1"; "3k"; "   2.5" ]
-    ; [ "b"; "2"; "3k"; "0.17e4" ]
-    ; [ "b"; "1"; "3k"; "0.17e4" ]
-    ; [ "a"; "2"; "1g"; "0.17e4" ]
-    ; [ "a"; "2"; "1g"; "   2.5" ]
-    ; [ "b"; "2"; "1g"; "   2.5" ]
-    ; [ "a"; "2"; "3k"; "   2.5" ]
-    ; [ "b"; "2"; "3k"; "   2.5" ]
-    ]
-  in
+  let headers = multi_column_headers in
+  let data = multi_column_data in
   List.cartesian_product headers headers
   |> List.filter ~f:(fun (x, y) -> String.(x <> y))
   |> Deferred.List.iter ~how:`Sequential ~f:(fun fields ->
@@ -1275,6 +1284,56 @@ let%expect_test "multi-column-sort-types" =
     a,1,3k,0.17e4
     b,2,3k,0.17e4
     b,1,3k,0.17e4
+    |}];
+  return ()
+;;
+
+let%expect_test "no fields" =
+  let%bind () = sort_test ~data:multi_column_data [] in
+  [%expect
+    {|
+    string,int,bytes,float
+    a,1,3k,   2.5
+    a,1,3k,0.17e4
+    a,1,1g,   2.5
+    a,1,1g,0.17e4
+    a,2,3k,   2.5
+    a,2,3k,0.17e4
+    a,2,1g,   2.5
+    a,2,1g,0.17e4
+    b,1,3k,   2.5
+    b,1,3k,0.17e4
+    b,1,1g,   2.5
+    b,1,1g,0.17e4
+    b,2,3k,   2.5
+    b,2,3k,0.17e4
+    b,2,1g,   2.5
+    b,2,1g,0.17e4
+    |}];
+  return ()
+;;
+
+let%expect_test "no fields reversed" =
+  let%bind () = sort_test ~data:multi_column_data [ "-reverse" ] in
+  [%expect
+    {|
+    string,int,bytes,float
+    b,2,1g,0.17e4
+    b,2,1g,   2.5
+    b,2,3k,0.17e4
+    b,2,3k,   2.5
+    b,1,1g,0.17e4
+    b,1,1g,   2.5
+    b,1,3k,0.17e4
+    b,1,3k,   2.5
+    a,2,1g,0.17e4
+    a,2,1g,   2.5
+    a,2,3k,0.17e4
+    a,2,3k,   2.5
+    a,1,1g,0.17e4
+    a,1,1g,   2.5
+    a,1,3k,0.17e4
+    a,1,3k,   2.5
     |}];
   return ()
 ;;

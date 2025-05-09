@@ -166,7 +166,9 @@ module T = struct
       ~aliases:[ "-f"; "--field" ]
       "-field"
       (optional_with_default [] arg_type)
-      ~doc:" named fields to sort on, comma separated (outermost sort first)"
+      ~doc:
+        " named fields to sort on, comma separated (outermost sort first; sorted on all \
+         fields if omitted)"
   ;;
 
   let reverse_fields =

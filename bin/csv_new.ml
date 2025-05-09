@@ -22,7 +22,7 @@ module Sort = struct
       ~summary:"stably sort a csv file on a given column(s)"
       (let%map_open.Csv_param separator = sep
        and file = file_stdin_anon
-       and sort_columns = Lib.Csv_sort.Sort_column.param in
+       and sort_columns = Lib.Csv_sort.Sort_columns.param in
        fun () -> Lib.Csv_sort.run sort_columns file ~separator)
   ;;
 end
