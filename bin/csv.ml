@@ -48,13 +48,7 @@ let cut_command ~deprecated =
     (let%map_open sep
      and headers_wanted = headers_wanted fields
      and suppress_header
-     and no_header =
-       flag
-         "-no-headers"
-         ~doc:
-           "treat the CSV file as if it did not have headers; fields will be interpreted \
-            as indices"
-         no_arg
+     and no_header = no_headers_use_indices_instead
      and files = anon (sequence ("FILE" %: Filename_unix.arg_type)) in
      fun () ->
        if no_header && suppress_header

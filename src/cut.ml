@@ -38,10 +38,8 @@ let get_positions header_row headers_wanted =
   match headers_wanted with
   | `Limit_to headers ->
     let hmap =
-      Map.of_iteri_exn
-        (module String)
-        ~iteri:(fun ~f ->
-          Array.iteri header_row ~f:(fun i h -> f ~key:h ~data:i) [@nontail])
+      Map.of_iteri_exn (module String) ~iteri:(fun ~f ->
+        Array.iteri header_row ~f:(fun i h -> f ~key:h ~data:i) [@nontail])
     in
     Array.of_list headers
     |> Array.map ~f:(fun header ->

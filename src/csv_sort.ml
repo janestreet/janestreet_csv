@@ -1,6 +1,21 @@
 open Core
-open Csv_common
 module Time = Time_float_unix
+
+module Csv_kind = struct
+  (* [Cut] also supports zero-indexed fields of no-header CSVs, but it's
+     hard to share code because [Cut] is streaming and [Csv_sort] is not. *)
+
+  type t = { index_of_field : Csv_common.t -> string -> int option }
+
+  let has_header =
+    let index_of_field ({ header; lines = _ } : Csv_common.t) field =
+      List.findi header ~f:(fun _idx elem -> String.( = ) elem field) |> Option.map ~f:fst
+    in
+    { index_of_field }
+  ;;
+
+  let no_header = { index_of_field = (fun _ field -> Int.of_string_opt field) }
+end
 
 module Line_with_sort_key = struct
   type 'a t =
@@ -175,14 +190,23 @@ module Sort_columns = struct
   let to_sort_column_list ~header = function
     | Explicit_fields ts -> ts
     | All_fields order ->
-      List.map header ~f:(fun field -> { Sort_column.field; order; sort_type = Infer })
+      (match header with
+       | `Present header ->
+         List.map header ~f:(fun field -> { Sort_column.field; order; sort_type = Infer })
+       | `Anonymous_with_this_many_cols num_cols ->
+         List.init num_cols ~f:(fun i ->
+           { Sort_column.field = Int.to_string i; order; sort_type = Infer }))
   ;;
 end
 
-let sort_on_field ({ field; order; sort_type } : Sort_column.t) csv =
-  match List.findi csv.header ~f:(fun _idx elem -> String.( = ) elem field) with
+let sort_on_field
+  ({ index_of_field } : Csv_kind.t)
+  ({ field; order; sort_type } : Sort_column.t)
+  (csv : Csv_common.t)
+  =
+  match index_of_field csv field with
   | None -> failwithf "unable to find csv field %s" field ()
-  | Some (idx, _) ->
+  | Some idx ->
     let lines =
       Array.of_list_map csv.lines ~f:(fun line ->
         { Line_with_sort_key.key = List.nth_exn line idx; line })
@@ -196,13 +220,22 @@ let sort_on_field ({ field; order; sort_type } : Sort_column.t) csv =
     let compare = Line_with_sort_key.compare compare in
     Array.stable_sort lines ~compare;
     let lines = Array.map lines ~f:Line_with_sort_key.line |> Array.to_list in
-    { header = csv.header; lines }
+    { csv with lines }
 ;;
 
-let sort_on_fields ts csv = List.fold_right ts ~init:csv ~f:sort_on_field
+let sort_on_fields csv_kind ts csv =
+  List.fold_right ts ~init:csv ~f:(sort_on_field csv_kind)
+;;
 
-let run ?separator ts file =
-  Or_file.with_all file ?separator ~f:(fun csv ->
-    let ts = Sort_columns.to_sort_column_list ~header:csv.header ts in
-    csv |> sort_on_fields ts |> print_csv ?separator)
+let run ?separator ts file ~no_header =
+  Csv_common.Or_file.with_all file ?separator ~no_header ~f:(fun csv ->
+    let csv_kind, header =
+      match no_header with
+      | true ->
+        let num_cols = Option.value_map (List.hd csv.lines) ~f:List.length ~default:0 in
+        Csv_kind.no_header, `Anonymous_with_this_many_cols num_cols
+      | false -> Csv_kind.has_header, `Present csv.header
+    in
+    let ts = Sort_columns.to_sort_column_list ~header ts in
+    csv |> sort_on_fields csv_kind ts |> Csv_common.print_csv ?separator)
 ;;

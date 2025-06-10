@@ -1,5 +1,12 @@
 open! Core
 
+module Csv_kind : sig
+  type t
+
+  val has_header : t
+  val no_header : t
+end
+
 module Order : sig
   type t =
     | Ascending
@@ -35,5 +42,11 @@ module Sort_columns : sig
   val param : t Command.Param.t
 end
 
-val sort_on_fields : Sort_column.t list -> Csv_common.t -> Csv_common.t
-val run : ?separator:char -> Sort_columns.t -> Csv_common.Or_file.t -> unit
+val sort_on_fields : Csv_kind.t -> Sort_column.t list -> Csv_common.t -> Csv_common.t
+
+val run
+  :  ?separator:char
+  -> Sort_columns.t
+  -> Csv_common.Or_file.t
+  -> no_header:bool
+  -> unit

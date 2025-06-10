@@ -8,14 +8,25 @@ type t =
 [@@deriving compare, sexp]
 
 let empty = { header = []; lines = [] }
-let print_csv ?separator t = Csv.print ?separator (t.header :: t.lines)
 
-let of_csvlib_csv = function
-  | [] -> failwith "missing csv header"
-  | header :: lines -> { header; lines }
+let print_csv ?separator { header; lines } =
+  Csv.print
+    ?separator
+    (match header with
+     | [] -> lines
+     | _ :: _ -> header :: lines)
 ;;
 
-let load ?separator file = of_csvlib_csv (Csv.load ?separator file)
+let of_csvlib_csv csvlib_csv ~no_header =
+  match csvlib_csv with
+  | [] -> failwith "missing csv header"
+  | header :: lines ->
+    (match no_header with
+     | true -> { header = []; lines = csvlib_csv }
+     | false -> { header; lines })
+;;
+
+let load ?separator file = of_csvlib_csv (Csv.load ?separator file) ~no_header:false
 let load_all ?separator files = List.map files ~f:(load ?separator)
 
 module Or_file = struct
@@ -44,16 +55,16 @@ module Or_file = struct
     ;;
   end
 
-  let with_in_channel ?separator in_channel ~f =
+  let with_in_channel ?separator in_channel ~f ~no_header =
     protectx in_channel ~finally:In_channel.close ~f:(fun ic ->
-      f (of_csvlib_csv (Csv.load_in ?separator ic)))
+      f (of_csvlib_csv (Csv.load_in ?separator ic) ~no_header))
   ;;
 
-  let with_all ?separator t ~f =
+  let with_all ?separator t ~f ~no_header =
     match t with
     | Csv csv -> f csv
-    | File x -> with_in_channel ?separator (In_channel.create x) ~f
-    | Stdin -> with_in_channel ?separator In_channel.stdin ~f
+    | File x -> with_in_channel ?separator (In_channel.create x) ~f ~no_header
+    | Stdin -> with_in_channel ?separator In_channel.stdin ~f ~no_header
   ;;
 
   let with_in_channel_lines ?separator in_channel ~header_f ~f =

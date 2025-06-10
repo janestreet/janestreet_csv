@@ -90,8 +90,8 @@
 : === flags ===
 : 
 :   [-fields _], --fields      . named fields to extract, comma separated
-:   [-no-headers]              . treat the CSV file as if it did not have headers;
-:                                fields will be interpreted as indices
+:   [-no-headers]              . treat every row as data; interpret [-fields] as
+:                                zero-based indices
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')
 :   [-sh], -suppress-header, --suppress-header
@@ -108,8 +108,8 @@
 : === flags ===
 : 
 :   [-fields _], --fields      . named fields to extract, comma separated
-:   [-no-headers]              . treat the CSV file as if it did not have headers;
-:                                fields will be interpreted as indices
+:   [-no-headers]              . treat every row as data; interpret [-fields] as
+:                                zero-based indices
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')
 :   [-sh], -suppress-header, --suppress-header
@@ -405,6 +405,8 @@
 :                              . field type for sorting (default: infer) (can be
 :                                comma-separated values: bytes, float, infer, int,
 :                                natsort, span, string, time) (default: "")
+:   [-no-headers]              . treat every row as data; interpret [-fields] as
+:                                zero-based indices
 :   [-reverse-fields _], --reverse-fields
 :                              . fields for which to reverse the sort order
 :   [-reverse], --reverse      . reverse sorting order

@@ -18,5 +18,6 @@ let sum csv =
 ;;
 
 let run ?separator file =
-  Or_file.with_all file ?separator ~f:(fun csv -> sum csv |> print_csv ?separator)
+  Or_file.with_all file ?separator ~no_header:false ~f:(fun csv ->
+    sum csv |> print_csv ?separator)
 ;;
