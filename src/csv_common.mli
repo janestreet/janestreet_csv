@@ -35,8 +35,9 @@ module Or_file : sig
     -> f:(header:string list -> state:'a -> string list -> string list)
     -> unit
 
-  val with_all : ?separator:char -> t -> f:(csv -> unit) -> unit
+  val with_all : ?separator:char -> t -> f:(csv -> unit) -> no_header:bool -> unit
 end
 
-(** [of_csvlib_csv rows] assumes the first row is a header. It raises if [rows = []]. *)
-val of_csvlib_csv : string list list -> t
+(** [of_csvlib_csv rows] assumes the first row is a header if [no_header = false].
+    Regardless, it raises if [rows = []]. *)
+val of_csvlib_csv : string list list -> no_header:bool -> t

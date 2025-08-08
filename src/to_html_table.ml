@@ -18,7 +18,7 @@ let run
   ~unescaped_html
   file
   =
-  Or_file.with_all file ?separator ~f:(fun csv ->
+  Or_file.with_all file ?separator ~no_header:false ~f:(fun csv ->
     let table_attrs =
       convert_attrs (("border", Some (if border then "1" else "0")) :: table_attrs)
     in

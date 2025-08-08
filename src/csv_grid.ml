@@ -46,9 +46,11 @@ let grid ~field ~start ~stop ~step csv =
 ;;
 
 let run ?separator ~field ~start ~stop ~step file =
-  Or_file.with_all ?separator file ~f:(fun csv ->
+  Or_file.with_all ?separator file ~no_header:false ~f:(fun csv ->
     csv
-    |> Csv_sort.sort_on_fields [ { field; order = Ascending; sort_type = Time } ]
+    |> Csv_sort.sort_on_fields
+         Csv_sort.Csv_kind.has_header
+         [ { field; order = Ascending; sort_type = Time } ]
     |> grid ~field ~start ~stop ~step
     |> print_csv ?separator)
 ;;

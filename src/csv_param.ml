@@ -129,6 +129,13 @@ module T = struct
       ~aliases:[ "-no-header"; "--no-header" ]
   ;;
 
+  let no_headers_use_indices_instead =
+    flag
+      "-no-headers"
+      ~doc:"treat every row as data; interpret [-fields] as zero-based indices"
+      no_arg
+  ;;
+
   let space =
     let open Command.Param in
     flag
