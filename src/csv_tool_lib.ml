@@ -1,3 +1,4 @@
+module Add_column = Add_column
 module Change_separator = Change_separator
 module Convert = Convert
 module Csv_common = Csv_common

@@ -51,3 +51,7 @@ end
 module Count_rows : sig
   val command : Command.t
 end
+
+module Add_column : sig
+  val command : Command.t
+end
