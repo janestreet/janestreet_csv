@@ -6,7 +6,7 @@ module Csv_param = Lib.Csv_param
 module Merge = struct
   let command =
     Command.basic
-      ~summary:"merge multiple CSV files into one"
+      ~summary:"concatenate multiple CSV files into one"
       (let%map_open.Csv_param separator = sep
        and files in
        fun () ->
@@ -138,6 +138,18 @@ module To_html_table = struct
   ;;
 end
 
+module To_pipe_table = struct
+  let command =
+    Command.basic
+      ~summary:"print a csv as a pipe-delimited table"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon
+       and no_header
+       and suppress_header in
+       fun () -> Lib.To_pipe_table.run ~separator ~no_header ~suppress_header file)
+  ;;
+end
+
 module Sum = struct
   let command =
     Command.basic
@@ -159,7 +171,8 @@ module Id = struct
     Command.async
       ~summary:"transfer input to output, canonicalising quoting"
       (let%map_open.Csv_param sep
-       and file = file_stdin_anon in
+       and file = file_stdin_anon
+       and suppress_header in
        fun () ->
          let%bind reader =
            match file with
@@ -167,7 +180,7 @@ module Id = struct
            | File f -> Reader.open_file f
            | Stdin -> force Reader.stdin |> return
          in
-         Lib.Id.run ~sep reader (force Writer.stdout))
+         Lib.Id.run ~sep ~suppress_header reader (force Writer.stdout))
   ;;
 end
 
@@ -217,5 +230,33 @@ module Count_rows = struct
       (let%map_open.Csv_param separator = sep
        and file = file_stdin_anon in
        fun () -> Lib.Csv_count_rows.run ~separator file)
+  ;;
+end
+
+module Add_column = struct
+  let command =
+    Command.async
+      ~summary:"add a new column to a csv"
+      (let%map_open.Csv_param sep
+       and file = file_stdin_anon
+       and column = flag "-column" (required string) ~doc:" name of new column"
+       and value =
+         flag
+           "-value"
+           (optional_with_default "" string)
+           ~doc:" value of new column (defaults to blank)"
+       and after =
+         flag
+           "-after"
+           (optional string)
+           ~doc:"COLUMN insert new column after this column (defaults to end)"
+       and allow_duplicate_column =
+         flag
+           "-allow-duplicate-column"
+           no_arg
+           ~doc:" continue even if the new column's name is already in use"
+       in
+       fun () ->
+         Lib.Add_column.run ~sep ?after file ~column ~value ~allow_duplicate_column)
   ;;
 end

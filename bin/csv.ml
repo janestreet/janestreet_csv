@@ -183,7 +183,9 @@ let to_sexp_command =
 let command =
   Command.group
     ~summary:"CSV tool"
-    [ "change-separator", Csv_tool_lib.Change_separator.command
+    [ "add-column", Csv_new.Add_column.command
+    ; "change-separator", Csv_tool_lib.Change_separator.command
+    ; "cat", Csv_new.Merge.command
     ; "cut2", cut_command ~deprecated:true
     ; "cut", cut_command ~deprecated:false
     ; "join", join_command
@@ -201,6 +203,7 @@ let command =
     ; "grid", Csv_new.Grid.command
     ; "to-ascii-table", Csv_new.To_ascii_table.command
     ; "to-html-table", Csv_new.To_html_table.command
+    ; "to-pipe-table", Csv_new.To_pipe_table.command
     ; "grep", Csv_new.Grep.command
     ; "sum", Csv_new.Sum.command
     ; "sum-group", Csv_new.Sum_group.command

@@ -2,7 +2,7 @@
  (modes byte exe)
  (names csv)
  (public_names janestreet_csv)
- (libraries async csvfields.csvlib core_unix.command_unix core csv_tool_lib
+ (libraries async core_unix.command_unix core csv_tool_lib csvfields.csvlib
    core_unix.filename_unix pcre)
  (preprocess
   (pps ppx_jane)))

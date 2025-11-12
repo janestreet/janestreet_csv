@@ -6,6 +6,8 @@
 : 
 : === subcommands ===
 : 
+:   add-column                 . add a new column to a csv
+:   cat                        . concatenate multiple CSV files into one
 :   change-separator           . Changes the delimiter, respecting quoting
 :   count-rows                 . print the number of rows of data (excluding
 :                                header) in a csv
@@ -22,7 +24,7 @@
 :                                time and span
 :   id                         . transfer input to output, canonicalising quoting
 :   join                       . join for csv files
-:   merge                      . merge multiple CSV files into one
+:   merge                      . concatenate multiple CSV files into one
 :   of-sexp                    . of sexp
 :   pop                        . filter to rows which have certain fields fully
 :                                populated
@@ -36,6 +38,7 @@
 :                                producing a new csv file
 :   to-ascii-table             . print a csv as an ascii-table
 :   to-html-table              . print a csv as an HTML table
+:   to-pipe-table              . print a csv as a pipe-delimited table
 :   to-sexp                    . to sexp
 :   transpose                  . transpose csv rows to columns for easier
 :                                command-line viewing
@@ -55,6 +58,36 @@
 : 
 :   [-build-info]              . print build info for this build
 :   [-version]                 . print the version of this build
+:   [-help], -?                . print this help text and exit
+
+** add-column
+
+: add a new column to a csv
+: 
+:   csv.exe add-column [FILENAME]
+: 
+: === flags ===
+: 
+:   -column _                  . name of new column
+:   [-after COLUMN]            . insert new column after this column (defaults to
+:                                end)
+:   [-allow-duplicate-column]  . continue even if the new column's name is already
+:                                in use
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
+:   [-value _]                 . value of new column (defaults to blank)
+:   [-help], -?                . print this help text and exit
+
+** cat
+
+: concatenate multiple CSV files into one
+: 
+:   csv.exe cat [FILENAME ...]
+: 
+: === flags ===
+: 
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
 :   [-help], -?                . print this help text and exit
 
 ** change-separator
@@ -298,6 +331,8 @@
 : 
 :   [-sep CHAR], -d, -delim, --sep
 :                              . csv separator (default: ',')
+:   [-sh], -suppress-header, --suppress-header
+:                              . keep the header row from appearing in the output
 :   [-help], -?                . print this help text and exit
 
 ** join
@@ -319,7 +354,7 @@
 
 ** merge
 
-: merge multiple CSV files into one
+: concatenate multiple CSV files into one
 : 
 :   csv.exe merge [FILENAME ...]
 : 
@@ -516,6 +551,22 @@
 :                                "align=center")
 :   [-unescaped-html]          . if input file contains HTML snippets, don't
 :                                escape them and include as-is
+:   [-help], -?                . print this help text and exit
+
+** to-pipe-table
+
+: print a csv as a pipe-delimited table
+: 
+:   csv.exe to-pipe-table [FILENAME]
+: 
+: === flags ===
+: 
+:   [-nh], -no-header, --no-header
+:                              . do not treat the first row as a header row
+:   [-sep CHAR], -d, -delim, --sep
+:                              . csv separator (default: ',')
+:   [-sh], -suppress-header, --suppress-header
+:                              . keep the header row from appearing in the output
 :   [-help], -?                . print this help text and exit
 
 ** to-sexp

@@ -1,3 +1,4 @@
+module Add_column = Add_column
 module Change_separator = Change_separator
 module Convert = Convert
 module Csv_common = Csv_common
@@ -23,4 +24,5 @@ module Split_csv = Split_csv
 module Sum_group = Sum_group
 module To_ascii_table = To_ascii_table
 module To_html_table = To_html_table
+module To_pipe_table = To_pipe_table
 module Validate = Validate

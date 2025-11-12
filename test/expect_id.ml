@@ -49,3 +49,26 @@ let%expect_test "ragged" =
       |}];
     return ())
 ;;
+
+let%expect_test "suppress header" =
+  do_test (fun () ->
+    let%bind () =
+      Writer.with_file "input.csv" ~f:(fun writer ->
+        Writer.write
+          writer
+          {|"foo","bar","baz"
+"1","2","3"
+"x","y","z"
+"","foo""bar",xyz
+|};
+        Writer.flushed writer)
+    in
+    let%bind () = run "csv" [ "id"; "input.csv"; "-sh" ] in
+    [%expect
+      {|
+      1,2,3
+      x,y,z
+      ,"foo""bar",xyz
+      |}];
+    return ())
+;;

@@ -18,6 +18,7 @@ module Expect_sum = Expect_sum
 module Expect_sum_group = Expect_sum_group
 module Expect_to_ascii_table = Expect_to_ascii_table
 module Expect_to_html_table = Expect_to_html_table
+module Expect_to_pipe_table = Expect_to_pipe_table
 module Expect_to_sexp = Expect_to_sexp
 module Expect_transpose = Expect_transpose
 module Expect_unpop = Expect_unpop
