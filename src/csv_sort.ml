@@ -2,8 +2,8 @@ open Core
 module Time = Time_float_unix
 
 module Csv_kind = struct
-  (* [Cut] also supports zero-indexed fields of no-header CSVs, but it's
-     hard to share code because [Cut] is streaming and [Csv_sort] is not. *)
+  (* [Cut] also supports zero-indexed fields of no-header CSVs, but it's hard to share
+     code because [Cut] is streaming and [Csv_sort] is not. *)
 
   type t = { index_of_field : Csv_common.t -> string -> int option }
 
@@ -54,8 +54,8 @@ module Converted = struct
   (* The order here kinda matters, at least in that we need to check Int before Float.
      (2^63 is a parsable float, but loses information in the process.)
 
-     All the typed values, however, are obviously incompatible (i.e. we can't confuse
-     a time/span/byte, since the suffixes are unambiguous.) *)
+     All the typed values, however, are obviously incompatible (i.e. we can't confuse a
+     time/span/byte, since the suffixes are unambiguous.) *)
   let infer_choices : (module Sortable) list =
     [ (module Time_ns.Span)
     ; (module Byte_units)
