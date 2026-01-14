@@ -117,8 +117,8 @@ let%expect_test _ =
     return ())
 ;;
 
-(* For times before the first data point, assume all fields are blank.  For times after
-   the last data point, carry forward the last data point. *)
+(* For times before the first data point, assume all fields are blank. For times after the
+   last data point, carry forward the last data point. *)
 let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in

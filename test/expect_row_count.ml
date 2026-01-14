@@ -23,8 +23,8 @@ let make_input_csv ?sep filename =
 let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv "input.csv" in
-    (* notice how counting with cat and wc-l does gives the WRONG row count due to
-       the newline and header *)
+    (* notice how counting with cat and wc-l does gives the WRONG row count due to the
+       newline and header *)
     let%bind () = system "cat input.csv | wc -l" in
     [%expect {| 5 |}];
     (* using the count-rows command we can correctly count the 3 rows *)

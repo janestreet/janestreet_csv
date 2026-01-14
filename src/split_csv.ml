@@ -56,8 +56,8 @@ let of_mapped_csv mapped_csv ~(key_spec : Key_specifier.t) =
     (Mapped_csv.header_map mapped_csv)
 ;;
 
-(* Converts a list of Csv.t to a list of split_csv where the key
-   columns are specified by ~key. ~f is then applied to the output. *)
+(* Converts a list of Csv.t to a list of split_csv where the key columns are specified by
+   ~key. ~f is then applied to the output. *)
 let by_key ?(header = true) ~key csvs =
   let col_spec =
     if header

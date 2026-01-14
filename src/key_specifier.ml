@@ -6,7 +6,7 @@ exception Invalid_specifier of string
 
 let to_string_set t = t
 
-(* An int specifier looks like 1,3,5-7.  This function converts to a col_specifier.  *)
+(* An int specifier looks like 1,3,5-7. This function converts to a col_specifier. *)
 let int_specifier_of_string spec =
   let validation_pattern = "\\d+(-\\d+)?(,\\d+(-\\d+)?)*" in
   if not (Pcre.pmatch ~pat:validation_pattern spec)

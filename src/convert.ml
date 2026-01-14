@@ -158,7 +158,7 @@ module Span_unit = struct
   [@@deriving compare, enumerate, sexp_of]
 
   let arg =
-    Enum.make_param_optional_with_default_doc
+    Enum.make_param_optional_with_default_doc_sexp
       "-unit"
       (module struct
         type nonrec t = t [@@deriving enumerate, sexp_of]

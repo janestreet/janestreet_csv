@@ -31,6 +31,7 @@ module Open_on_rhs_intf = struct
     val no_headers_use_indices_instead : bool t
     val space : int t
     val suppress_header : bool t
+    val utf8 : bool t
     val fields_gen : doc:string -> string list t
     val fields : string list t
     val fields_backward_compat : string list t

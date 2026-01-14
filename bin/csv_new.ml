@@ -51,8 +51,8 @@ module Grep = struct
         "grep in csv fields (using the re2 regular expression engine), while keeping the \
          header"
       (let%map_open.Csv_param
-         (* The default behavior is to print header only if there are output rows. It
-           is less good a behavior, but it is historically what this command did. *)
+         (* The default behavior is to print header only if there are output rows. It is
+            less good a behavior, but it is historically what this command did. *)
          separator
          =
          sep
@@ -135,6 +135,18 @@ module To_html_table = struct
            ~border
            ~unescaped_html
            file)
+  ;;
+end
+
+module To_pipe_table = struct
+  let command =
+    Command.basic
+      ~summary:"print a csv as a pipe-delimited table"
+      (let%map_open.Csv_param separator = sep
+       and file = file_stdin_anon
+       and no_header
+       and suppress_header in
+       fun () -> Lib.To_pipe_table.run ~separator ~no_header ~suppress_header file)
   ;;
 end
 

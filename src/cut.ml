@@ -2,7 +2,7 @@ open Core
 
 exception Not_enough_rows
 
-(*exception Invalid_range of string list*)
+(* exception Invalid_range of string list *)
 
 type row_processor =
   Csv_common.Or_file.t

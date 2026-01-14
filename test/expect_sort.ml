@@ -200,7 +200,7 @@ let%expect_test _ =
     |}]
 ;;
 
-(* Reverse int sort.  Note the stability. *)
+(* Reverse int sort. Note the stability. *)
 let%expect_test _ =
   let%map () =
     sort_test_with_named_and_anonymous_of_named

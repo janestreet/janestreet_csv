@@ -50,7 +50,7 @@ end = struct
 
     type 'a array_frozen = 'a array [@@deriving compare, sexp]
 
-    (* [array_frozen] can derive hash.  We don't expose any mutation. *)
+    (* [array_frozen] can derive hash. We don't expose any mutation. *)
     type t = string array_frozen [@@deriving compare, hash, sexp]
   end
 

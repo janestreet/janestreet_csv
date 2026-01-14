@@ -10,8 +10,8 @@ let create row_maps header_map = { row_maps; header_map }
 
 exception Malformed_csv of string
 
-(* Converts a Csv.t to a Mapped_csv.t.  This requires that the first row of
-   the csv contains the headers. *)
+(* Converts a Csv.t to a Mapped_csv.t. This requires that the first row of the csv
+   contains the headers. *)
 let of_csv csv =
   let build_header_map header_fields =
     List.foldi header_fields ~init:Int.Map.empty ~f:(fun idx map field_name ->

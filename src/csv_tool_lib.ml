@@ -24,4 +24,5 @@ module Split_csv = Split_csv
 module Sum_group = Sum_group
 module To_ascii_table = To_ascii_table
 module To_html_table = To_html_table
+module To_pipe_table = To_pipe_table
 module Validate = Validate

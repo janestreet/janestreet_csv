@@ -2,7 +2,7 @@ open! Core
 open! Async
 open! Import
 
-(* Shared columns are not used as a key.  Absent columns are assumed to be blank. *)
+(* Shared columns are not used as a key. Absent columns are assumed to be blank. *)
 let%expect_test _ =
   do_test (fun () ->
     let%bind () =
