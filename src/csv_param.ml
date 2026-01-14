@@ -58,7 +58,7 @@ module T = struct
   ;;
 
   let prefer_split_on_spaces =
-    flag_optional_with_default_doc
+    flag_optional_with_default_doc_sexp
       "-prefer-split-on-spaces"
       bool
       [%sexp_of: bool]
@@ -152,6 +152,11 @@ module T = struct
       no_arg
       ~doc:" keep the header row from appearing in the output"
       ~aliases:[ "-suppress-header"; "--suppress-header" ]
+  ;;
+
+  let utf8 =
+    let open Command.Param in
+    flag "-utf8" no_arg ~doc:" emit the output with utf8 encoding"
   ;;
 
   let fields_gen ~doc =

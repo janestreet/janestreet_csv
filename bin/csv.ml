@@ -159,11 +159,17 @@ let to_sexp_command =
   Command.basic
     ~summary
     (let%map_open separator = sep
+     and utf8
      and include_header = map ~f:not no_header in
      fun () ->
        let list x = Sexp.List x in
        let atom x = Sexp.Atom x in
        let rows = Csvlib.Csv.load_in ~separator In_channel.stdin in
+       let to_string =
+         match utf8 with
+         | true -> (Sexp.Utf8.to_string :> Sexp.t -> string)
+         | false -> Sexp.to_string
+       in
        if include_header
        then (
          match rows with
@@ -173,11 +179,11 @@ let to_sexp_command =
              List.zip_exn header row
              |> List.map ~f:(fun (h, v) -> list [ atom h; atom v ])
              |> list
-             |> Sexp.to_string
+             |> to_string
              |> print_endline))
        else
          List.iter rows ~f:(fun row ->
-           List.map row ~f:atom |> list |> Sexp.to_string |> print_endline))
+           List.map row ~f:atom |> list |> to_string |> print_endline))
 ;;
 
 let command =
