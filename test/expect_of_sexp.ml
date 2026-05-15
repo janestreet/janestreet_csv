@@ -130,8 +130,8 @@ let%expect_test "field omitted" =
       ("Unclean exit" (Exit_non_zero 1))
       --- STDERR ---
       (monitor.ml.Error
-       ("Row has wrong number of fields." (header (F1 F2 F3)) (row 2)
-        ((F1 X2) (F2 Y2))))
+       ("Row has wrong number of fields." (length 2) (expected_length 3)
+        (header (F1 F2 F3)) (row 2) ((F1 X2) (F2 Y2))))
       |}];
     return ())
 ;;
@@ -163,6 +163,44 @@ let%expect_test "duplicate fields" =
         (exn
          (Of_sexp_error "Map.t_of_sexp_direct: duplicate key" (invalid_sexp F2)))
         (sexp ((F1 X2) (F2 Y2) (F2 Y3)))))
+      |}];
+    return ())
+;;
+
+let%expect_test "non-atom fields" =
+  let input =
+    {|
+   ((F1 X1) (F2 ((foo f1)(bar b1))) (F3 Z1))
+   ((F1 X2) (F2 ((foo f2)(bar b2))) (F3 Z2))
+   |}
+  in
+  do_test (fun () ->
+    let%bind () = run ~stdin:input "csv" [ "of-sexp" ] in
+    [%expect
+      {|
+      F1,F2,F3
+      X1,((foo f1)(bar b1)),Z1
+      X2,((foo f2)(bar b2)),Z2
+      |}];
+    return ())
+;;
+
+let%expect_test "non-atom fields with commas, quotes and newlines" =
+  let input =
+    {|
+   ((F1 X1) (F2 (a "b,c")) (F3 Z1))
+   ((F1 X2) (F2 (d "e\"f")) (F3 Z2))
+   ((F1 X3) (F2 (a "b\nc")) (F3 Z3))
+   |}
+  in
+  do_test (fun () ->
+    let%bind () = run ~stdin:input "csv" [ "of-sexp" ] in
+    [%expect
+      {|
+      F1,F2,F3
+      X1,"(a b,c)",Z1
+      X2,"(d""e\""f"")",Z2
+      X3,"(a""b\nc"")",Z3
       |}];
     return ())
 ;;

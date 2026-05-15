@@ -519,6 +519,7 @@
 : === flags ===
 :
 :   [-limit-width-to _]        . maximum column width in output
+:   [-max-column-width _]      . maximum width of any single column (default: 90)
 :   [-prefer-split-on-spaces BOOL]
 :                              . prefer splitting lines on spaces rather than
 :                                mid-word (default: true)

@@ -56,7 +56,7 @@ let run ?separator ?skip_lines ~invert ~always_print_header ~grep_fields ~regexp
     in
     Pipe.of_list
       (List.map lines ~f:(fun line ->
-         Delimited.Read.Row.create header (Array.of_list line)))
+         Delimited.Read.Row.create header (Iarray.of_list line)))
   in
   let run rows_pipe =
     Deferred.Or_error.try_with ~run:`Schedule ~rest:`Log (fun () ->

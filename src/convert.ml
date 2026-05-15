@@ -14,10 +14,10 @@ module On_error = struct
   ;;
 end
 
-let convert_some_columns convert_value_exn (columns_to_map : bool array) ~on_error =
+let convert_some_columns convert_value_exn (columns_to_map : bool iarray) ~on_error =
   stage
-    (Array.mapi ~f:(fun i value ->
-       match columns_to_map.(i) with
+    (Iarray.mapi ~f:(fun i value ->
+       match columns_to_map.:(i) with
        | false -> value
        | true ->
          (match convert_value_exn value with
@@ -37,7 +37,7 @@ let convert_some_columns convert_value_exn (columns_to_map : bool array) ~on_err
 
 let convert_all_columns convert_value_exn =
   stage
-    (Array.map ~f:(fun value ->
+    (Iarray.map ~f:(fun value ->
        (* when converting all columns we assume [on_error = Skip] *)
        try convert_value_exn value with
        | _ -> value))
@@ -46,9 +46,9 @@ let convert_all_columns convert_value_exn =
 let convert_pipe reader writer ~convert_row =
   Pipe.iter' reader ~f:(fun queue ->
     Queue.iter queue ~f:(fun row ->
-      Delimited.Read.Row.to_array row
+      Delimited.Read.Row.to_iarray row
       |> unstage convert_row
-      |> Array.to_list
+      |> Iarray.to_list
       |> Pipe.write_without_pushback_if_open writer);
     Pipe.pushback writer)
 ;;
@@ -88,8 +88,8 @@ let run convert_value_exn reader ~only_these_columns ~sep =
      | `Ok ->
        Pipe.write_without_pushback writer !the_headers;
        let columns_to_map =
-         Array.of_list !the_headers
-         |> Array.map ~f:(List.mem column_names ~equal:String.equal)
+         Iarray.of_list !the_headers
+         |> Iarray.map ~f:(List.mem column_names ~equal:String.equal)
        in
        (match
           List.filter column_names ~f:(Fn.non (List.mem !the_headers ~equal:String.equal))

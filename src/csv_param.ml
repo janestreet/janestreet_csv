@@ -57,6 +57,15 @@ module T = struct
     flag "-limit-width-to" (optional int) ~doc:" maximum column width in output"
   ;;
 
+  let max_column_width =
+    flag_optional_with_default_doc_sexp
+      "-max-column-width"
+      int
+      [%sexp_of: int]
+      ~default:Ascii_table.default_max_col_width
+      ~doc:" maximum width of any single column"
+  ;;
+
   let prefer_split_on_spaces =
     flag_optional_with_default_doc_sexp
       "-prefer-split-on-spaces"

@@ -19,6 +19,7 @@ module Open_on_rhs_intf = struct
     val stop_time : Time_float.t t
     val grid_step : Time_float.Span.t t
     val max_width : int option t
+    val max_column_width : int t
     val prefer_split_on_spaces : bool t
     val regexp_arg : Re2.t Arg_type.t
     val regexp : Re2.t t
