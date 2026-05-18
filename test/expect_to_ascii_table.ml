@@ -49,6 +49,30 @@ let%expect_test _ =
     return ())
 ;;
 
+let%expect_test "max-column-width" =
+  do_test (fun () ->
+    let%bind () = make_input_csv "input.csv" in
+    let%bind () = run "csv" [ "to-ascii-table"; "-max-column-width"; "5"; "input.csv" ] in
+    [%expect
+      {|
+      ┌─────┬─────┬─────┐
+      │ fru │ qua │ own │
+      │  it │ nti │  er │
+      │     │  ty │     │
+      ├─────┼─────┼─────┤
+      │ app │   4 │ Abr │
+      │  le │     │ aha │
+      │     │     │   m │
+      │ app │   6 │ Bat │
+      │  le │     │ hsh │
+      │     │     │ eba │
+      │ ora │   2 │ Cyr │
+      │ nge │     │  us │
+      └─────┴─────┴─────┘
+      |}];
+    return ())
+;;
+
 let%expect_test _ =
   do_test (fun () ->
     let%bind () = make_input_csv ~sep:'.' "input.csv" in

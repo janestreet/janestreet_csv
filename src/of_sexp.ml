@@ -9,23 +9,31 @@ let parse_sexp of_sexp sexp =
 ;;
 
 module Row = struct
-  type t = string String.Map.t [@@deriving sexp]
+  type t = Sexp.t String.Map.t [@@deriving sexp]
 
   let parse_sexp = parse_sexp [%of_sexp: t]
 
   let to_csv_row t ~header ~row_number:row =
-    if Map.length t <> List.length header
+    let length = Map.length t in
+    let expected_length = List.length header in
+    if length <> expected_length
     then
       raise_s
         [%message
-          "Row has wrong number of fields." (header : string list) (row : int) ~_:(t : t)]
+          "Row has wrong number of fields."
+            (length : int)
+            (expected_length : int)
+            (header : string list)
+            (row : int)
+            ~_:(t : t)]
     else
       List.map header ~f:(fun field ->
         match Map.find t field with
         | None ->
           raise_s
             [%message "Missing field in a row." (field : string) (row : int) ~_:(t : t)]
-        | Some value -> value)
+        | Some (Atom atom) -> atom
+        | Some sexp -> Sexp.to_string_mach sexp)
   ;;
 end
 
@@ -37,7 +45,7 @@ let get_header sexps =
      (* In general this is valid. Here we know nobody else is reading from the pipe. *)
      | None -> raise_s [%message "Pipe has no values despite [values_available]."]
      | Some row ->
-       return (`Ok (List.map (parse_sexp [%of_sexp: (string * string) list] row) ~f:fst)))
+       return (`Ok (List.map (parse_sexp [%of_sexp: (string * Sexp.t) list] row) ~f:fst)))
 ;;
 
 let command =

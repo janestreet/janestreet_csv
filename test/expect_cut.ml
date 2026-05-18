@@ -185,7 +185,7 @@ let%expect_test "incorrect duplication of header" =
 ;;
 
 let%expect_test "properly cut a csv that's loaded into memory" =
-  let f row = Csvlib.Csv.print [ Array.to_list row ] in
+  let f row = Csvlib.Csv.print [ Iarray.to_list row ] in
   let () =
     Cut.cut_by_field_names
       (Csv example_csv)

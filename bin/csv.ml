@@ -60,7 +60,7 @@ let cut_command ~deprecated =
        in
        let handle_file ~skip_header file =
          cutfn file ~sep headers_wanted ~skip_header ~f:(fun row ->
-           Csvlib.Csv.print [ Array.to_list row ])
+           Csvlib.Csv.print [ Iarray.to_list row ])
        in
        match files with
        | [] -> handle_file ~skip_header:suppress_header Stdin
@@ -115,14 +115,14 @@ let pop_or_unpop_command ~summary pop_type =
          match pop_type with
          | `pop ->
            Cut.fully_populated_rows file ~skip_header ~sep headers_wanted ~f:(fun row ->
-             Csvlib.Csv.print [ Array.to_list row ])
+             Csvlib.Csv.print [ Iarray.to_list row ])
          | `unpop ->
            Cut.not_fully_populated_rows
              file
              ~skip_header
              ~sep
              headers_wanted
-             ~f:(fun row -> Csvlib.Csv.print [ Array.to_list row ])
+             ~f:(fun row -> Csvlib.Csv.print [ Iarray.to_list row ])
        in
        match files with
        | None -> handle_file Stdin

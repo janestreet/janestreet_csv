@@ -97,9 +97,15 @@ module To_ascii_table = struct
       (let%map_open.Csv_param separator = sep
        and file = file_stdin_anon
        and limit_width_to = max_width
+       and max_col_width = max_column_width
        and prefer_split_on_spaces in
        fun () ->
-         Lib.To_ascii_table.run ~separator ?limit_width_to file ~prefer_split_on_spaces)
+         Lib.To_ascii_table.run
+           ~separator
+           ?limit_width_to
+           ~max_col_width
+           file
+           ~prefer_split_on_spaces)
   ;;
 end
 

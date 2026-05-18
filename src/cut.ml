@@ -8,7 +8,7 @@ type row_processor =
   Csv_common.Or_file.t
   -> skip_header:bool
   -> sep:char
-  -> f:(string array -> unit)
+  -> f:(string iarray -> unit)
   -> [ `Limit_to of string list | `All_but of string list ]
   -> unit
 
@@ -24,12 +24,12 @@ let load_rows ?on_invalid_row file ~sep ~f =
           Delimited_kernel.Read.Row.builder
           ic
           ~init:()
-          ~f:(fun () row -> f (Delimited_kernel.Read.Row.to_array row)))
+          ~f:(fun () row -> f (Delimited_kernel.Read.Row.to_iarray row)))
       ~finally:In_channel.close
   in
   match (file : Csv_common.Or_file.t) with
   | Csv { header; lines } ->
-    List.iter (header :: lines) ~f:(fun row -> Array.of_list row |> f)
+    List.iter (header :: lines) ~f:(fun row -> Iarray.of_list row |> f)
   | Stdin | File "-" -> process In_channel.stdin
   | File x -> process (In_channel.create x)
 ;;
@@ -39,10 +39,10 @@ let get_positions header_row headers_wanted =
   | `Limit_to headers ->
     let hmap =
       Map.of_iteri_exn (module String) ~iteri:(fun ~f ->
-        Array.iteri header_row ~f:(fun i h -> f ~key:h ~data:i) [@nontail])
+        Iarray.iteri header_row ~f:(fun i h -> f ~key:h ~data:i) [@nontail])
     in
-    Array.of_list headers
-    |> Array.map ~f:(fun header ->
+    Iarray.of_list headers
+    |> Iarray.map ~f:(fun header ->
       match Map.find hmap header with
       | Some position -> position
       | None ->
@@ -50,16 +50,16 @@ let get_positions header_row headers_wanted =
          | _ -> raise_s [%message "Unknown header" ~_:(header : string)]))
   | `All_but headers ->
     let headers = String.Set.of_list headers in
-    Array.filter_mapi header_row ~f:(fun pos header ->
+    Iarray.filter_mapi header_row ~f:(fun pos header ->
       if Set.mem headers header then None else Some pos)
 ;;
 
 let index_positions header_row headers_wanted =
   match headers_wanted with
-  | `Limit_to headers -> Array.of_list_map headers ~f:Int.of_string
+  | `Limit_to headers -> Iarray.of_list_map headers ~f:Int.of_string
   | `All_but headers ->
     let headers = List.map headers ~f:Int.of_string |> Int.Set.of_list in
-    Array.filter_mapi header_row ~f:(fun pos _ ->
+    Iarray.filter_mapi header_row ~f:(fun pos _ ->
       if Set.mem headers pos then None else Some pos)
 ;;
 
@@ -73,7 +73,8 @@ let cut_by_fields file ~consume_header_names ~skip_header ~sep ~f headers_wanted
           | false -> index_positions row headers_wanted
         in
         let grab row =
-          Array.map positions ~f:(fun i -> if Array.length row < i then "" else row.(i))
+          Iarray.map positions ~f:(fun i ->
+            if Iarray.length row < i then "" else Iarray.get row i)
         in
         if not skip_header then f (grab row);
         handle_row := fun row -> f (grab row));
@@ -86,7 +87,7 @@ let cut_by_field_indices = cut_by_fields ~consume_header_names:false
 exception First_row of string list
 
 let field_names ~sep file =
-  let throw_row row = raise (First_row (Array.to_list row)) in
+  let throw_row row = raise (First_row (Iarray.to_list row)) in
   try
     load_rows
       ~on_invalid_row:
@@ -106,7 +107,7 @@ let field_names ~sep file =
 let regex_match file ~sep ~f ~regexp =
   let handle_row rows =
     let grab rows =
-      Array.map rows ~f:(fun row -> if Pcre.pmatch ~rex:regexp row then row else "")
+      Iarray.map rows ~f:(fun row -> if Pcre.pmatch ~rex:regexp row then row else "")
     in
     f (grab rows)
   in
@@ -123,8 +124,9 @@ let split_populated_rows file ~skip_header ~sep ~f_populated ~f_unpopulated head
    := fun row ->
         let positions = get_positions row headers_wanted in
         let populated row =
-          let n = Array.length row in
-          Array.for_all positions ~f:(fun i -> i < n && String.length row.(i) > 0)
+          let n = Iarray.length row in
+          Iarray.for_all positions ~f:(fun i ->
+            i < n && String.length (Iarray.get row i) > 0)
         in
         if not skip_header
         then (
