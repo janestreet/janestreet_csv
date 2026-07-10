@@ -21,7 +21,6 @@ depends: [
   "core_unix"
   "csvfields"
   "delimited_parsing"
-  "fieldslib"
   "numeric_string"
   "ppx_jane"
   "re2"
