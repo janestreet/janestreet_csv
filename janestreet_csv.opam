@@ -21,7 +21,6 @@ depends: [
   "core_unix"
   "csvfields"
   "delimited_parsing"
-  "fieldslib"
   "numeric_string"
   "ppx_jane"
   "re2"
@@ -31,6 +30,9 @@ depends: [
   "tyxml"             {>= "4.3.0"}
 ]
 available: arch != "x86_32"
+conflicts: [
+  "oxcaml-compiler" {< "5.2.0minus39"}
+]
 synopsis: "Tools for working with CSVs on the command line"
 description: "
 A suite of tools for working with CSVs from the command line.  It
